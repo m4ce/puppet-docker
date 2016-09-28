@@ -14,7 +14,6 @@ Puppet::Type.newtype(:docker_volume) do
 
   newparam(:name, :namevar => true) do
     desc "The new volume’s name"
-    isnamevar
   end
 
   newparam(:driver) do

@@ -43,8 +43,6 @@ Puppet::Type.type(:docker_network).provide(:docker_api) do
 
   def create
     config = {}
-    config['name'] = resource[:name]
-
     unless resource[:check_duplicate].nil?
       config['CheckDuplicate'] = resource[:check_duplicate] == :true ? true : false
     end
@@ -64,7 +62,7 @@ Puppet::Type.type(:docker_network).provide(:docker_api) do
     config['Options'] = resource[:options] if resource[:options]
     config['Labels'] = resource[:labels] if resource[:labels]
 
-    Docker::Network.create(config)
+    Docker::Network.create(resource[:name], config)
     @property_hash[:ensure] = :present
   end
 

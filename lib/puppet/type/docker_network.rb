@@ -32,6 +32,10 @@ Puppet::Type.newtype(:docker_network) do
 
   newparam(:ipam) do
     desc "Optional custom IP scheme for the network"
+
+    validate do |value|
+      raise ArgumentError, "Docker network IPAM configuration '#{value}' is not a Hash" unless value.is_a?(Hash)
+    end
   end
 
   newparam(:enable_ipv6, :boolean => true) do
@@ -41,10 +45,18 @@ Puppet::Type.newtype(:docker_network) do
 
   newparam(:options) do
     desc "Network specific options to be used by the drivers"
+
+    validate do |value|
+      raise ArgumentError, "Docker network options '#{value}' is not a Hash" unless value.is_a?(Hash)
+    end
   end
 
   newparam(:labels) do
     desc 'Labels to set on the network, specified as a map: {"key":"value","key2":"value2"}'
+
+    validate do |value|
+      raise ArgumentError, "Docker network labels '#{value}' is not a Hash" unless value.is_a?(Hash)
+    end
   end
 
   autorequire(:service) do

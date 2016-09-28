@@ -292,18 +292,24 @@ Size of /dev/shm in bytes. The size must be greater than 0. If omitted the syste
 <a name="hiera"/>
 ## Hiera integration
 
-You can optionally define your images and containers in Hiera using the docker::images and docker::containers class parameters.
+You can optionally define your images, containers, volumes and networks in Hiera.
 
 ```
 ---
 docker::images:
-  "centos:latest:
+  "centos:latest":
     ensure: "present"
 docker::containers:
   "mycontainer":
     image: "centos:latest"
     cmd: ["/usr/bin/sleep", "60"]
     ensure: "running"
+docker::networks:
+  "prod":
+    ensure: "present"
+docker::volumes:
+  "data":
+    ensure: "present"
 ```
 
 <a name="contact"/>

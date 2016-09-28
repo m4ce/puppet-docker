@@ -23,10 +23,18 @@ Puppet::Type.newtype(:docker_volume) do
 
   newparam(:driver_opts) do
     desc "A mapping of driver options and values. These options are passed directly to the driver and are driver specific."
+
+    validate do |value|
+      raise ArgumentError, "Docker volume driver options '#{value}' is not a Hash" unless value.is_a?(Hash)
+    end
   end
 
   newparam(:labels) do
     desc 'Labels to set on the volume, specified as a map: {"key":"value","key2":"value2"}'
+
+    validate do |value|
+      raise ArgumentError, "Docker volume labels '#{value}' is not a Hash" unless value.is_a?(Hash)
+    end
   end
 
   autorequire(:service) do

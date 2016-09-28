@@ -142,7 +142,7 @@ Puppet::Type.newtype(:docker_container) do
       raise ArgumentError, "#{value} is not a Hash" unless value.is_a?(Hash)
 
       value.keys.each do |k|
-        if k !~ /^\d+/(tcp|udp)$/
+        if k !~ /^\d+\/(tcp|udp)$/
           raise ArgumentError, "Container exposed port '#{k}' must be in the form of <port>/<tcp|udp>"
         end
       end
@@ -220,7 +220,7 @@ Puppet::Type.newtype(:docker_container) do
   end
 
   newproperty(:cpu_shares) do
-    desc "Total memory limit (memory + swap); set -1 to enable unlimited swap. You must use this with memory and make the swap value larger than memory."
+    desc "An integer value containing the container’s CPU Shares (ie. the relative weight vs other containers)."
 
     validate do |value|
       raise ArgumentError, "Container CPU shares '#{value}' is not an Integer" unless value.is_a?(Integer)

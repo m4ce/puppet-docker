@@ -22,7 +22,7 @@ The docker module allows to automate the configuration and runtime of containers
 <a name="setup"/>
 ## Setup
 
-The module requires the [docker-api](https://rubygems.org/gems/docker-api) rubygem.
+The module requires the [docker-api](https://rubygems.org/gems/docker-api) rubygem. It also requires Puppet >= 4.0.0.
 
 ```
 include docker

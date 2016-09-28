@@ -1,0 +1,19 @@
+{
+    "author": "Matteo Cerutti",
+    "dependencies": [],
+    "description": "This module provides native types and providers to manage Docker",
+    "issues_url": "https://github.com/m4ce/puppet-docker/issues",
+    "license": "Apache-2.0",
+    "name": "m4ce-docker",
+    "operatingsystem_support": [],
+    "project_page": "https://github.com/m4ce/puppet-docker",
+    "requirements": [
+        {
+            "name": "puppet",
+            "version_requirement": ">= 3.6.0 < 5.0.0"
+        }
+    ],
+    "source": "https://github.com/m4ce/puppet-docker",
+    "summary": "This module provides native types and providers to manage Docker",
+    "version": "0.0.1"
+}

@@ -7,7 +7,8 @@ lookup_options:
       sort_merge_arrays: true
 docker::images: {}
 docker::containers: {}
-docker::users: []
+docker::volumes: {}
+docker::networks: {}
 docker::daemon_options:
   selinux:
     enabled: true

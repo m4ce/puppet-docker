@@ -1,6 +1,8 @@
 class docker (
   Docker::Images $images,
   Docker::Containers $containers,
+  Docker::Networks $networks,
+  Docker::Volumes $volumes,
   Optional[Hash] $daemon_options,
   String $cert_path,
   Optional[Array] $add_registries,
@@ -31,6 +33,18 @@ class docker (
 
   $containers.each |String $k, Docker::Container $v| {
     docker_container {$k:
+      * => $v
+    }
+  }
+
+  $networks.each |String $k, Docker::Network $v| {
+    docker_network {$k:
+      * => $v
+    }
+  }
+
+  $volumes.each |String $k, Docker::Volume $v| {
+    docker_volume {$k:
       * => $v
     }
   }

@@ -1,19 +1,28 @@
 {
     "author": "Matteo Cerutti",
+    "data_provider": "hiera",
     "dependencies": [],
     "description": "This module provides native types and providers to manage Docker",
     "issues_url": "https://github.com/m4ce/puppet-docker/issues",
     "license": "Apache-2.0",
     "name": "m4ce-docker",
     "operatingsystem_support": [
-      {
-        "operatingsystem": "RedHat",
-        "operatingsystemrelease": [ "7.0", "7.1", "7.2" ]
-      },
-      {
-        "operatingsystem": "CentOS",
-        "operatingsystemrelease": [ "7.0", "7.1", "7.2" ]
-      }
+        {
+            "operatingsystem": "RedHat",
+            "operatingsystemrelease": [
+                "7.0",
+                "7.1",
+                "7.2"
+            ]
+        },
+        {
+            "operatingsystem": "CentOS",
+            "operatingsystemrelease": [
+                "7.0",
+                "7.1",
+                "7.2"
+            ]
+        }
     ],
     "project_page": "https://github.com/m4ce/puppet-docker",
     "requirements": [

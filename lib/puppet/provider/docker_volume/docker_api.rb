@@ -20,7 +20,7 @@ Puppet::Type.type(:docker_volume).provide(:docker_api) do
     Docker::Volume.all.each do |volume|
       instances << new(
         :id => volume.id,
-        :name => volume.info['Name']
+        :name => volume.info['Name'],
         :ensure => :present
       )
     end

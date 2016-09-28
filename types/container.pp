@@ -10,7 +10,7 @@ type Docker::Container = Struct[{
   Optional[tty] => Boolean,
   Optional[open_stdin] => Boolean,
   Optional[stdin_once] => Boolean,
-  Optional[env] => Array[Pattern[/^\w+=.*$/],
+  Optional[env] => Array[Pattern[/^\w+=.*$/]],
   Optional[cmd] => Variant[String, Array],
   Optional[entrypoint] => Variant[String, Array],
   Optional[labels] => Hash,

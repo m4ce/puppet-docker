@@ -99,22 +99,22 @@ A string value containing the domain name to use for the container
 A string value specifying the user inside the container
 
 ##### `attach_stdin` (optional)
-Boolean value, attaches to stdin. Default to false.
+Boolean value, attaches to stdin.
 
 ##### `attach_stdout` (optional)
-Boolean value, attaches to stdout. Default to false.
+Boolean value, attaches to stdout.
 
 ##### `attach_stderr` (optional)
-Boolean value, attaches to stderr. Default to false.
+Boolean value, attaches to stderr.
 
 ##### `tty` (optional)
-Boolean value, Attach standard streams to a tty, including stdin if it is not closed. Default to false.
+Boolean value, Attach standard streams to a tty, including stdin if it is not closed.
 
 ##### `open_stdin` (optional)
-Boolean value, opens stdin. Default to false.
+Boolean value, opens stdin.
 
 ##### `stdin_once` (optional)
-Boolean value, close stdin after the 1 attached client disconnects. Default to false.
+Boolean value, close stdin after the 1 attached client disconnects.
 
 ##### `env` (optional)
 A list of environment variables in the form of ["VAR=value", "VAR2=value2" ..]

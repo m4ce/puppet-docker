@@ -53,7 +53,7 @@ Puppet::Type.type(:docker_volume).provide(:docker_api) do
   end
 
   def destroy
-    volume = Docker::Volume.get(@property_hash['id'])
+    volume = Docker::Volume.get(@property_hash[:id])
     volume.remove
     @property_hash.clear
   end

@@ -43,12 +43,11 @@ Puppet::Type.type(:docker_volume).provide(:docker_api) do
 
   def create
     config = {}
-    config['name'] = resource[:name]
     config['Driver'] = resource[:driver] if resource[:driver]
     config['DriverOpts'] = resource[:driver_opts] if resource[:driver_opts]
     config['Labels'] = resource[:labels] if resource[:labels]
 
-    Docker::Volume.create(config)
+    Docker::Volume.create(resource[:name], config)
     @property_hash[:ensure] = :present
   end
 

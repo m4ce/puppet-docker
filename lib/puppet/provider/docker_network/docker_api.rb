@@ -67,7 +67,7 @@ Puppet::Type.type(:docker_network).provide(:docker_api) do
   end
 
   def destroy
-    volume = Docker::Network.get(@property_hash['id'])
+    network = Docker::Network.get(@property_hash[:id])
     network.remove
     @property_hash.clear
   end

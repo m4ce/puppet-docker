@@ -1,0 +1,29 @@
+---
+lookup_options:
+  docker::daemon_options:
+    merge:
+      strategy: deep
+      knockout_prefix: --
+      sort_merge_arrays: true
+docker::images: {}
+docker::containers: {}
+docker::users: []
+docker::daemon_options:
+  selinux:
+    enabled: true
+  log:
+    driver: journald
+docker::cert_path: "/etc/docker"
+docker::add_registries: []
+docker::block_registries: []
+docker::insecure_registries: []
+docker::cli_path: "/usr/bin/docker"
+docker::service_file: "/etc/sysconfig/docker"
+docker::service_file_manage: true
+docker::package_name: "docker"
+docker::service_name: "docker"
+docker::service_manage: true
+docker::service_ensure: "stopped"
+docker::service_enable: true
+docker::storage::config_file: "/etc/sysconfig/docker-storage-setup"
+docker::storage::config_file_manage: true

@@ -17,10 +17,10 @@ Puppet::Type.type(:docker_network).provide(:docker_api) do
   def self.instances
     instances = []
 
-    Docker::Network.all.each do |volume|
+    Docker::Network.all.each do |network|
       instances << new(
-        :id => volume.id,
-        :name => volume.info['Name'],
+        :id => network.id,
+        :name => network.info['Name'],
         :ensure => :present
       )
     end

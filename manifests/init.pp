@@ -11,7 +11,6 @@ class docker (
   Optional[String] $tmpdir = undef,
   Optional[Boolean] $logrotate = undef,
   Optional[String] $bin_path = undef,
-  String $cli_path,
   String $service_file,
   Boolean $service_file_manage,
   String $package_name,

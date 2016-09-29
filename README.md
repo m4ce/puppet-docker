@@ -31,6 +31,126 @@ include docker
 <a name="reference"/>
 ## Reference
 
+### Classes
+
+#### docker
+`docker`
+
+```
+include docker
+```
+
+##### `images` (optional)
+Docker images in the form of {'image_name' => { .. }}
+
+##### `containers` (optional)
+Docker containers in the form of {'container_name' => { .. }}
+
+##### `networks` (optional)
+Docker networks in the form of {'network_name' => { .. }}
+
+##### `volumes` (optional)
+Docker volumes in the form of {'volume_name' => { .. }}
+
+##### `daemon_options` (optional)
+Docker daemon options in the form of {'option' => 'value'}.
+
+Defaults to:
+```
+docker::daemon_options:
+  selinux:
+    enabled: true
+  log:
+    driver: journald
+```
+
+##### `cert_path` (optional)
+Docker certificate path (default: /etc/docker)
+
+##### `add_registries` (optional)
+List of registries to be used for docker search and pull
+
+##### `block_registries` (optional)
+List of registries to be blocked
+
+##### `insecure_registries` (optional)
+List of registries secured with https but without valid certs
+
+##### `tmpdir` (optional)
+Location used for temporary files
+
+##### `logrotate` (optional)
+Enable or disable log rotation
+
+##### `bin_path` (optional)
+Controls the docker binary to run
+
+##### `service_file` (optional)
+Path to the docker service configuration file (default: '/etc/sysconfig/docker')
+
+##### `service_file_manage` (optional)
+Whether we should manage the service configuration file or not (default: true)
+
+##### `package_name` (optional)
+Installation packge for Docker (default: 'docker')
+
+##### `service_name` (optional)
+Docker service name (default: 'docker')
+
+##### `service_manage` (optional)
+Whether we should manage the service runtime or not (default: true)
+
+##### `service_ensure` (optional)
+Whether the resource is running or not. Valid values are 'running', 'stopped'. (default: 'running')
+
+##### `service_enable` (optional)
+Whether the service is onboot enabled or not. Defaults to true.
+
+#### docker::storage
+`docker::storage`
+
+##### `driver` (required)
+Specify storage driver one wants to use with docker. Valid values are: '', 'devicemapper', 'overlay'.
+
+##### `extra_options` (optional)
+A set of extra options for the storage driver. These options will be passed to the Docker daemon as-is and should be valid Docker storage options.
+
+##### 'devs' (optional)
+A quoted, space-separated list of devices to be used
+
+##### `vg` (optional)
+The volume group to use for docker storage
+
+##### `root_size` (optional)
+The size to which the root filesystem should be grown
+
+##### `data_size` (optional)
+The desired size for the docker data LV
+
+##### `min_data_size` (optional)
+Specifies the minimum size of data volume otherwise pool creation fails
+
+##### `chunk_size` (optional)
+Controls the chunk size/block size of thin pool
+
+##### `growpart` (optional)
+Enable resizing partition table backing root volume group
+
+##### `auto_extend_pool` (optional)
+Enable/disable automatic pool extension using lvm
+
+##### `pool_autoextend_threshold` (optional)
+Auto pool extension threshold (in % of pool size)
+
+##### `pool_autoextend_percent` (optional)
+Extend the pool by specified percentage when threshold is hit
+
+##### `config_file` (optional)
+Path to the docker-storage-setup configuration file (default: /etc/sysconfig/docker-storage-setup)
+
+##### `config_file_manage` (optional)
+Whether we should manage the storage config configuration file or not (default: true)
+
 ### Types
 
 #### docker_image

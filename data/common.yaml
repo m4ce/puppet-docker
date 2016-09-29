@@ -18,7 +18,6 @@ docker::cert_path: "/etc/docker"
 docker::add_registries: []
 docker::block_registries: []
 docker::insecure_registries: []
-docker::cli_path: "/usr/bin/docker"
 docker::service_file: "/etc/sysconfig/docker"
 docker::service_file_manage: true
 docker::package_name: "docker"

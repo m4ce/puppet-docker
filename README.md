@@ -49,7 +49,7 @@ Docker image name, defaults to name
 ##### `image_tag` (optional)
 Docker image tag, defaults to name
 
-##### `ensure` (required)
+##### `ensure` (optional)
 Whether the resource is present or not. Valid values are 'present', 'absent'. Defaults to 'present'.
 
 ##### `force`
@@ -301,7 +301,7 @@ docker_volume {"data":
 ##### `name` (required)
 Docker volume name
 
-##### `ensure` (required)
+##### `ensure` (optional)
 Whether the resource is present or not. Valid values are 'present', 'absent'. Defaults to 'present'.
 
 ##### `driver` (optional)
@@ -325,7 +325,7 @@ docker_network {"fast":
 ##### `name` (required)
 Docker network name
 
-##### `ensure` (required)
+##### `ensure` (optional)
 Whether the resource is present or not. Valid values are 'present', 'absent'. Defaults to 'present'.
 
 ##### `check_duplicate` (optional)

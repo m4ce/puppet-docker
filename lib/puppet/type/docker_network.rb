@@ -52,7 +52,7 @@ Puppet::Type.newtype(:docker_network) do
   end
 
   newparam(:labels) do
-    desc 'Labels to set on the network, specified as a map: {"key":"value","key2":"value2"}'
+    desc 'Labels to set on the network, specified as a map: {"key" => "value","key2" => "value2"}'
 
     validate do |value|
       raise ArgumentError, "Docker network labels '#{value}' is not a Hash" unless value.is_a?(Hash)

@@ -289,6 +289,66 @@ Driver that this container users to mount volumes.
 ##### `shm_size` (optional)
 Size of /dev/shm in bytes. The size must be greater than 0. If omitted the system uses 64MB.
 
+#### docker_volume
+`docker_volume` manages Docker volumes
+
+```
+docker_volume {"data":
+  ensure => "present"
+}
+```
+
+##### `name` (required)
+Docker volume name
+
+##### `ensure` (required)
+Whether the resource is present or not. Valid values are 'present', 'absent'. Defaults to 'present'.
+
+##### `driver` (optional)
+Name of the volume driver to use
+
+##### `driver_opts` (optional)
+A mapping og driver options and values.
+
+##### `labels` (optional)
+Labels to set on the volume, specified as a map: {"key" => "value","key2" => "value2"}
+
+#### docker_network
+`docker_network` manages Docker networks
+
+```
+docker_network {"fast":
+  ensure => "present"
+}
+```
+
+##### `name` (required)
+Docker network name
+
+##### `ensure` (required)
+Whether the resource is present or not. Valid values are 'present', 'absent'. Defaults to 'present'.
+
+##### `check_duplicate` (optional)
+Requests daemon to check for networks with same name
+
+##### `driver` (optional)
+Name of the network driver plugin to use
+
+##### `internal` (optional)
+Restrict external access to the network
+
+##### `ipam` (optional)
+Optional custom IP scheme for the network
+
+##### `enable_ipv6` (optional)
+Enable IPv6 on the network
+
+##### `options` (optional)
+Network specific options to be used by the drivers
+
+##### `labels` (optional)
+Labels to set on the network, specified as a map: {"key" => "value","key2" => "value2"}
+
 <a name="hiera"/>
 ## Hiera integration
 

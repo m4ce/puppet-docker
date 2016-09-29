@@ -29,7 +29,7 @@ Puppet::Type.newtype(:docker_volume) do
   end
 
   newparam(:labels) do
-    desc 'Labels to set on the volume, specified as a map: {"key":"value","key2":"value2"}'
+    desc 'Labels to set on the volume, specified as a map: {"key" => "value","key2" => "value2"}'
 
     validate do |value|
       raise ArgumentError, "Docker volume labels '#{value}' is not a Hash" unless value.is_a?(Hash)

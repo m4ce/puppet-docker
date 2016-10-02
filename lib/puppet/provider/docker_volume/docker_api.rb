@@ -47,9 +47,7 @@ Puppet::Type.type(:docker_volume).provide(:docker_api) do
     config['DriverOpts'] = resource[:driver_opts] if resource[:driver_opts]
     config['Labels'] = resource[:labels] if resource[:labels]
 
-    # FIXME: depends on https://github.com/swipely/docker-api/pull/451
-    #Docker::Volume.create(resource[:name], config)
-    Docker::Volume.create(resource[:name])
+    Docker::Volume.create(resource[:name], config)
     @property_hash[:ensure] = :present
   end
 

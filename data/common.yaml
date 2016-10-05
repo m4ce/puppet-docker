@@ -23,7 +23,7 @@ docker::service_file_manage: true
 docker::package_name: "docker"
 docker::service_name: "docker"
 docker::service_manage: true
-docker::service_ensure: "stopped"
+docker::service_ensure: "running"
 docker::service_enable: true
 docker::storage::config_file: "/etc/sysconfig/docker-storage-setup"
 docker::storage::config_file_manage: true

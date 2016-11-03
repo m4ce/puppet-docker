@@ -22,7 +22,7 @@ BLOCK_REGISTRY='<%= join($docker::block_registries.map |$registry| { "--block-re
 # distributed, you can tell docker to not look for full authorization by
 # adding the registry to the INSECURE_REGISTRY line and uncommenting it.
 INSECURE_REGISTRY='<%= join($docker::insecure_registries.map |String $registry| { "--insecure-registry ${registry}" }, " ") %>'
-<% if 'selinux' in $docker::options and 'enabled' in $docker::options['selinux'] and $docker::options['selinux']['enabled'] == false { -%>
+<% if 'selinux' in $docker::daemon_options and 'enabled' in $docker::daemon_options['selinux'] and $docker::daemon_options['selinux']['enabled'] == false { -%>
 
 # On an SELinux system, if you remove the --selinux-enabled option, you
 # also need to turn on the docker_transition_unconfined boolean.

@@ -46,7 +46,7 @@ Puppet::Type.type(:docker_image).provide(:docker_api) do
   end
 
   def create
-    Docker::Image.create('fromImage' => resource[:image])
+    Docker::Image.create('fromImage' => "#{resource[:image_name]}:#{resource[:image_tag]}")
     @property_hash[:ensure] = :present
   end
 

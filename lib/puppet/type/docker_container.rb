@@ -7,6 +7,9 @@
 Puppet::Type.newtype(:docker_container) do
   @doc = 'Manage Docker container(s) runtime'
 
+
+  feature :refreshable, "The provider can restart the container.", :methods => [:restart]
+
   ensurable do
     desc 'Whether the container should be running or not'
     defaultvalues

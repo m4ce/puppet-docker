@@ -225,6 +225,11 @@ Puppet::Type.type(:docker_container).provide(:docker_api) do
     @property_hash.clear
   end
 
+  def restart
+    container = Docker::Container.get(@property_hash[:id])
+    container.restart
+  end
+
   # Using mk_resource_methods relieves us from having to explicitly write the getters for all properties
   mk_resource_methods
 

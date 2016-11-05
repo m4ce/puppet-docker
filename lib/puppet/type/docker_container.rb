@@ -551,6 +551,14 @@ Puppet::Type.newtype(:docker_container) do
     end
   end
 
+  def refresh
+    if (@parameters[:ensure] || newattr(:ensure)).retrieve == :running
+      provider.restart
+    else
+      debug "Skipping restart; container is not running"
+    end
+  end
+
   autorequire(:service) do
     ["docker"]
   end

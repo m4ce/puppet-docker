@@ -356,7 +356,7 @@ Puppet::Type.newtype(:docker_container) do
       raise ArgumentError, "Container port bindings '#{value}' is not a Hash" unless value.is_a?(Hash)
 
       value.each do |k, v|
-        if k !~ /^\d+/(tcp|udp)$/
+        if k !~ /^\d+\/(tcp|udp)$/
           raise ArgumentError, "Container port binding '#{k}' must be in the form of <port>/<tcp|udp>"
         end
 

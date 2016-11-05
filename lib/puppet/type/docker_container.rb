@@ -33,8 +33,8 @@ Puppet::Type.newtype(:docker_container) do
   newparam(:image) do
     desc 'A string specifying the image name to use for the container'
 
-    validate do
-      raise ArgumentError, "Docker image is required for container #{self[:name]}" unless self[:image]
+    validate do |value|
+      raise ArgumentError, "Docker image is required for container #{self[:name]}" unless value
     end
   end
 
@@ -553,6 +553,6 @@ Puppet::Type.newtype(:docker_container) do
   end
 
   autorequire(:docker_image) do
-    self[:image]
+    [self[:image]]
   end
 end

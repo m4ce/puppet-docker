@@ -45,10 +45,10 @@ Puppet::Type.newtype(:docker_container) do
 
   newproperty(:image) do
     desc 'A string specifying the image name to use for the container'
+  end
 
-    validate do |value|
-      raise ArgumentError, "Docker image is required for container #{self[:name]}" unless value
-    end
+  validate do
+    raise ArgumentError, "Docker image is required for container #{self[:name]}" unless self[:image]
   end
 
   newproperty(:domain_name) do

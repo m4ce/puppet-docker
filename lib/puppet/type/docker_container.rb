@@ -390,7 +390,7 @@ Puppet::Type.newtype(:docker_container) do
   end
 
   newproperty(:cpu_shares) do
-    desc "An integer value containing the container’s CPU Shares (ie. the relative weight vs other containers)."
+    desc "An integer value containing the container's CPU Shares (ie. the relative weight vs other containers)."
 
     validate do |value|
       raise ArgumentError, "Container CPU shares '#{value}' is not an Integer" unless value.is_a?(Integer)

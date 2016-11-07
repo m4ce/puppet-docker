@@ -18,12 +18,10 @@ docker::cert_path: "/etc/docker"
 docker::add_registries: []
 docker::block_registries: []
 docker::insecure_registries: []
-docker::service_file: "/etc/sysconfig/docker"
 docker::service_file_manage: true
 docker::package_name: "docker"
 docker::service_name: "docker"
 docker::service_manage: true
 docker::service_ensure: "running"
 docker::service_enable: true
-docker::storage::config_file: "/etc/sysconfig/docker-storage-setup"
 docker::storage::config_file_manage: true

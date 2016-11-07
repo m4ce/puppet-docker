@@ -587,7 +587,7 @@ Puppet::Type.newtype(:docker_container) do
   end
 
   newproperty(:memory_swappiness) do
-    desc "Tune a container’s memory swappiness behavior. Accepts an integer between 0 and 100."
+    desc "Tune a container memory swappiness behavior. Accepts an integer between 0 and 100."
 
     validate do |value|
       raise ArgumentError, "Container memory swappiness '#{value}' is not an Integer" unless value.is_a?(Integer)
@@ -601,7 +601,7 @@ Puppet::Type.newtype(:docker_container) do
   end
 
   newproperty(:oom_score_adj) do
-    desc "Tune container’s OOM preferences (-1000 to 1000)"
+    desc "Tune container OOM preferences (-1000 to 1000)"
 
     validate do |value|
       raise ArgumentError, "Container OOM score '#{value}' is not an Integer" unless value.is_a?(Integer)
@@ -616,7 +616,7 @@ Puppet::Type.newtype(:docker_container) do
   end
 
   newproperty(:pids_limit) do
-    desc "Tune a container’s pids limit. Set -1 for unlimited"
+    desc "Tune a container pids limit. Set -1 for unlimited"
 
     validate do |value|
       raise ArgumentError, "Container PIDs limit '#{value}' is not an Integer" unless value.is_a?(Integer)
@@ -681,7 +681,7 @@ Puppet::Type.newtype(:docker_container) do
   end
 
   newproperty(:publish_all_ports, :boolean => true) do
-    desc "Allocates a random host port for all of a container’s exposed ports"
+    desc "Allocates a random host port for all of a container exposed ports"
     newvalues(:true, :false)
     defaultto(:false)
   end
@@ -693,7 +693,7 @@ Puppet::Type.newtype(:docker_container) do
   end
 
   newproperty(:readonly_rootfs, :boolean => true) do
-    desc "Mount the container’s root filesystem as read only"
+    desc "Mount the container root filesystem as read only"
     newvalues(:true, :false)
     defaultto(:false)
   end
@@ -765,7 +765,7 @@ Puppet::Type.newtype(:docker_container) do
   end
 
   newproperty(:extra_hosts, :array_matching => :all) do
-    desc 'A list of hostnames/IP mappings to add to the container’s /etc/hosts file. Specified in the form ["hostname:IP"].'
+    desc 'A list of hostnames/IP mappings to add to the container /etc/hosts file. Specified in the form ["hostname:IP"].'
 
     validate do |value|
       if value !~ /^.+:(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/
@@ -897,7 +897,7 @@ Puppet::Type.newtype(:docker_container) do
   end
 
   newproperty(:network_mode) do
-    desc 'Sets the networking mode for the container. Supported standard values are: bridge, host, none, and container:<name|id>. Any other value is taken as a custom network’s name to which this container should connect to.'
+    desc 'Sets the networking mode for the container. Supported standard values are: bridge, host, none, and container:<name|id>. Any other value is taken as a custom network name to which this container should connect to.'
   end
 
   newproperty(:devices, :array_matching => :all) do
@@ -1016,7 +1016,7 @@ Puppet::Type.newtype(:docker_container) do
   end
 
   newproperty(:cgroup_parent) do
-    desc 'Path to cgroups under which the container’s cgroup is created. If the path is not absolute, the path is considered to be relative to the cgroups path of the init process. Cgroups are created if they do not already exist.'
+    desc 'Path to cgroups under which the container cgroup is created. If the path is not absolute, the path is considered to be relative to the cgroups path of the init process. Cgroups are created if they do not already exist.'
     defaultto('')
   end
 

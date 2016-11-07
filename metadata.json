@@ -33,5 +33,5 @@
     ],
     "source": "https://github.com/m4ce/puppet-docker",
     "summary": "This module provides native types and providers to manage Docker",
-    "version": "0.1.3"
+    "version": "0.1.4"
 }

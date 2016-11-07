@@ -8,7 +8,6 @@ Puppet::Type.type(:docker_network).provide(:docker_api) do
   desc "Docker network provider"
 
   confine :feature => :docker_api
-
   require 'docker'
 
   # Use the docker unix socket for communicating with the daemon

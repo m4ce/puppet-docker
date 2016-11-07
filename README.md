@@ -12,17 +12,29 @@
 <a name="overview"/>
 ## Overview
 
-This module implements native types and providers to manage some aspects of Docker.
+This module implements native types and providers to manage some aspects of Docker. The providers are *fully idempotent* and they only rely
+on the docker metadata.
+
+For docker containers, when changing parameters that cannot be updated without restarting the container, there's an optional boolean flag called
+[*remove_on_change*](#remove_on_change) which allows to you either remove the container or rename it to a random UUID.
 
 <a name="module-description"/>
 ## Module Description
 
-The docker module allows to automate the configuration and runtime of containers as well as the deployment of images.
+The docker module allows to automate the configuration and runtime of containers as well as the deployment of images, networks and volumes.
 
 <a name="setup"/>
 ## Setup
 
 The module requires the [docker-api](https://rubygems.org/gems/docker-api) rubygem. It also requires Puppet >= 4.0.0.
+
+Install the rubygem as follows:
+
+```
+/opt/puppetlabs/puppet/bin/gem install docker-api
+```
+
+The include the main class as follows:
 
 ```
 include docker
@@ -185,7 +197,7 @@ docker_container {"helloworld":
   ensure => "running"
 ```
 
-Note that only the following parameters can be changed during the runtime of a container:
+Note that only the following parameters can be changed *without* re-creating the container:
 
   * blkio_weight
   * cpu_shares
@@ -202,6 +214,11 @@ Note that only the following parameters can be changed during the runtime of a c
 
 ##### `name` (required)
 Docker container name
+
+<a name="remove_on_change"/>
+##### `remove_on_change` (optional)
+When set to true, log, remove and re-create the container when changing non-runtime parameters. When false, the container will be
+renamed to a random UUID before re-creating it. Valid values are true or false. Defaults to false.
 
 ##### `image` (required)
 A string specifying the image name to use for the container.

@@ -33,7 +33,17 @@ Puppet::Type.newtype(:docker_container) do
     desc 'Container name'
   end
 
-  newparam(:image) do
+  newproperty(:hostname) do
+    desc "Container hostname"
+  end
+
+  newparam(:remove_on_change, :boolean => true) do
+    desc 'Boolean value, remove container when changing non runtime parameters, else renames it'
+    newvalues(:true, :false)
+    defaultto(:false)
+  end
+
+  newproperty(:image) do
     desc 'A string specifying the image name to use for the container'
 
     validate do |value|
@@ -41,105 +51,207 @@ Puppet::Type.newtype(:docker_container) do
     end
   end
 
-  newparam(:hostname) do
-    desc "Container hostname"
-  end
-
-  newparam(:domain_name) do
+  newproperty(:domain_name) do
     desc "Container domain name"
   end
 
-  newparam(:user) do
+  newproperty(:user) do
     desc "A string value specifying the user inside the container."
   end
 
-  newparam(:attach_stdin, :boolean => true) do
+  newproperty(:attach_stdin, :boolean => true) do
     desc 'Boolean value, attaches to stdin'
     newvalues(:true, :false)
   end
 
-  newparam(:attach_stdout, :boolean => true) do
+  newproperty(:attach_stdout, :boolean => true) do
     desc 'Boolean value, attaches to stdout'
     newvalues(:true, :false)
   end
 
-  newparam(:attach_stderr, :boolean => true) do
+  newproperty(:attach_stderr, :boolean => true) do
     desc 'Boolean value, attaches to stderr.'
     newvalues(:true, :false)
   end
 
-  newparam(:tty, :boolean => true) do
+  newproperty(:tty, :boolean => true) do
     desc 'Boolean value, Attach standard streams to a tty, including stdin if it is not closed.'
     newvalues(:true, :false)
   end
 
-  newparam(:open_stdin, :boolean => true) do
+  newproperty(:open_stdin, :boolean => true) do
     desc 'Boolean value, opens stdin'
     newvalues(:true, :false)
   end
 
-  newparam(:stdin_once, :boolean => true) do
+  newproperty(:stdin_once, :boolean => true) do
     desc 'Boolean value, close stdin after the 1 attached client disconnects'
     newvalues(:true, :false)
   end
 
-  newparam(:env) do
+  newproperty(:env, :array_matching => :all) do
     desc 'A list of environment variables in the form of ["VAR=value"[,"VAR2=value2"]]'
 
     validate do |value|
-      raise ArgumentError, "#{value} is not an Array" unless value.is_a?(Array)
+      if value !~ /^\w+=.*$/
+        raise ArgumentError, "Container environment variable '#{value}' is not in the form of VAR=value"
+      end
+    end
 
-      value.each do |env|
-        if env !~ /^\w+=.*$/
-          raise ArgumentError, "Container environment variable '#{env}' is not in the form of VAR=value"
+    def insync?(current)
+      return false if current == :absent
+
+      cur = {}
+      current.map { |x| x.split('=', 2) }.each do |k, v|
+        cur[k] = v
+      end
+
+      new = {}
+      @should.map { |x| x.split('=', 2) }.each do |k, v|
+        new[k] = v
+      end
+
+      new.each do |k, v|
+        if cur.keys.include?(k)
+          return false unless cur[k] == v
+        else
+          return false
         end
+      end
+
+      true
+    end
+
+    def should
+      return nil unless @should
+
+      members = @should
+
+      current = provider.env
+      if current != :absent
+        cur = {}
+        current.map { |x| x.split('=', 2) }.each do |k, v|
+          cur[k] = v
+        end
+
+        new = {}
+        @should.map { |x| x.split('=', 2) }.each do |k, v|
+          new[k] = v
+        end
+
+        members = cur.merge(new).map { |k, v| "#{k}=#{v}" }
+      end
+
+      members
+    end
+
+    def should_to_s(newvalue = @should)
+      if newvalue
+        newvalue.inspect
+      else
+        nil
       end
     end
   end
 
-  newparam(:cmd) do
+  newproperty(:cmd, :array_matching => :all) do
     desc "Command to run specified as a string or an array of strings"
 
-    validate do |value|
-      raise ArgumentError, "Container command '#{value}' must be either a String or an Array" unless value.is_a?(String) or value.is_a?(Array)
+    def should_to_s(newvalue = @should)
+      if newvalue
+        newvalue.inspect
+      else
+        nil
+      end
     end
   end
 
-  newparam(:entrypoint) do
+  newproperty(:entrypoint, :array_matching => :all) do
     desc "Set the entry point for the container as a string or an array of strings"
 
-    validate do |value|
-      raise ArgumentError, "Container entrypoint #{value} must be either a String or an Array" unless value.is_a?(String) or value.is_a?(Array)
+    def should_to_s(newvalue = @should)
+      if newvalue
+        newvalue.inspect
+      else
+        nil
+      end
     end
   end
 
-  newparam(:labels) do
+  newproperty(:labels) do
     desc 'Adds a map of labels to a container. To specify a map: {"key" => "value"[,"key2" => "value2"]}'
 
     validate do |value|
       raise ArgumentError, "Container labels '#{value}' is not a Hash" unless value.is_a?(Hash)
     end
+
+    def insync?(current)
+      return false if current == :absent
+
+      @should.first.each do |k, v|
+        if current.keys.include?(k)
+          return false unless current[k] == v
+        else
+          return false
+        end
+      end
+
+      true
+    end
+
+    def should
+      return nil unless @should
+      members = @should.first
+
+      current = provider.labels
+      if current != :absent
+        members = current.merge(members)
+      end
+
+      members
+    end
   end
 
-  newparam(:volumes) do
+  newproperty(:volumes) do
     desc "An object mapping mount point paths (strings) inside the container to empty objects."
 
     validate do |value|
       raise ArgumentError, "Container volumes '#{value}' is not a Hash" unless value.is_a?(Hash)
     end
+
+    def insync?(current)
+      return false if current == :absent
+      @should.first.each do |k, v|
+        return false unless current.keys.include?(k)
+      end
+
+      true
+    end
+
+    def should
+      return nil unless @should
+      members = @should.first
+
+      current = provider.volumes
+      if current != :absent
+        members = current.merge(members)
+      end
+
+      members
+    end
   end
 
-  newparam(:workdir) do
+  newproperty(:workdir) do
     desc "A string specifying the working directory for commands to run in"
   end
 
-  newparam(:network_disabled, :boolean => true) do
+  newproperty(:network_disabled, :boolean => true) do
     desc "A string specifying the working directory for commands to run in"
     newvalues(:true, :false)
   end
 
-  newparam(:exposed_ports) do
-    desc "An object mapping ports to an empty object in the form of: <port>/<tcp|udp>: {}"
+  newproperty(:exposed_ports) do
+    desc 'An object mapping ports to an empty object in the form of: "<port>/<tcp|udp>" => {}'
 
     validate do |value|
       raise ArgumentError, "#{value} is not a Hash" unless value.is_a?(Hash)
@@ -150,35 +262,90 @@ Puppet::Type.newtype(:docker_container) do
         end
       end
     end
+
+    def insync?(current)
+      return false if current == :absent
+      @should.first.each do |k, v|
+        return false unless current.keys.include?(k)
+      end
+
+      true
+    end
+
+    def should
+      return nil unless @should
+      members = @should.first
+
+      current = provider.exposed_ports
+      if current != :absent
+        members = current.merge(members)
+      end
+
+      members
+    end
   end
 
   newparam(:stop_signal) do
     desc "Signal to stop a container as a string or unsigned integer"
   end
 
-  newparam(:binds) do
-    desc "A list of volume bindings for this container"
+  newproperty(:binds, :array_matching => :all) do
+    desc "A list of volume bindings for this container. Each volume binding is a string in one of these forms:
+ * host-src:container-dest to bind-mount a host path into the container. Both host-src, and container-dest must be an absolute path.
+ * host-src:container-dest:ro to make the bind-mount read-only inside the container. Both host-src, and container-dest must be an absolute path.
+ * volume-name:container-dest to bind-mount a volume managed by a volume driver into the container. container-dest must be an absolute path.
+ * volume-name:container-dest:ro to mount the volume read-only inside the container. container-dest must be an absolute path."
 
     validate do |value|
-      raise ArgumentError, "#{value} is not an Array" unless value.is_a?(Array)
+      if value !~ /^.+:.+:r[wo]$/
+        raise ArgumentError, "Container volume bind '#{value}' is not in the form of <host_path>:<container_path>:<ro|rw>"
+      end
+    end
 
-      value.each do |v|
-        if v !~ /^[\w\/]+:[\w\/]+(:(rw|ro))?$/
-          raise ArgumentError, "Container volume bind '#{v}' is not in the form of <host_path>:<container_path>[:<ro|rw>]"
-        end
+    def insync?(current)
+      return false if current == :absent
+      return current == @should
+    end
+
+    def should
+      return nil unless @should
+      @should
+    end
+
+    def should_to_s(newvalue = @should)
+      if newvalue
+        newvalue.inspect
+      else
+        nil
       end
     end
   end
 
-  newparam(:links) do
-    desc "A list of links for the container. Each link entry should be in the form of container_name:alias"
+  newproperty(:links, :array_matching => :all) do
+    desc "A list of links for the container. Each link entry should be in the form of <container_name>:<alias>"
 
     validate do |value|
-      raise ArgumentError, "#{value} is not an Array" unless value.is_a?(Array)
+      if value !~ /^\w+:\w+$/
+        raise ArgumentError, "Container link '#{value}' is not in the form of <container_name>:<alias>"
+      end
+    end
 
-        if v !~ /^\w+:\w+$/
-          raise ArgumentError, "Container link '#{v}' is not in the form of <container_name>:<alias>"
-        end
+    def insync?(current)
+      return false if current == :absent
+      return current == @should
+    end
+
+    def should
+      return nil unless @should
+      @should
+    end
+
+    def should_to_s(newvalue = @should)
+      if newvalue
+        newvalue.inspect
+      else
+        nil
+      end
     end
   end
 
@@ -275,46 +442,147 @@ Puppet::Type.newtype(:docker_container) do
 
     validate do |value|
       raise ArgumentError, "Container block IO weight '#{value}' is not an Integer" unless value.is_a?(Integer)
+      raise ArgumentError, "Container block IO weight '#{value}' must be between 10 and 1000" unless (value >= 10 and value <= 1000)
     end
   end
 
-  newparam(:blkio_weight_device) do
+  newproperty(:blkio_weight_device, :array_matching => :all) do
     desc 'Block IO weight (relative device weight) in the form of [{"Path" => "device_path", "Weight" => weight}]'
 
     validate do |value|
-      raise ArgumentError, "Container block IO device weight '#{value}' is not an Array" unless value.is_a?(Array)
+      raise ArgumentError, "Missing 'Path' in Block IO weight device" unless value.has_key?('Path')
+      raise ArgumentError, "Missing 'Weight' in Block IO weight device" unless value.has_key?('Weight')
+      raise ArgumentError, "'Weight' parameter must be an Integer in Block IO weight device" unless value['Weight'].is_a?(Integer)
+    end
+
+    def insync?(current)
+      return false if current == :absent
+      return current == @should
+    end
+
+    def should
+      return nil unless @should
+      @should
+    end
+
+    def should_to_s(newvalue = @should)
+      if newvalue
+        newvalue.inspect
+      else
+        nil
+      end
     end
   end
 
-  newparam(:blkio_device_read_bps) do
-    desc "Limit read rate (bytes per second) from a device"
+  newproperty(:blkio_device_read_bps, :array_matching => :all) do
+    desc 'Limit read rate (bytes per second) from a device in the form of: [{"Path" => "device_path", "Rate" => rate}]'
 
     validate do |value|
-      raise ArgumentError, "Container device read rate Bps limit '#{value}' is not an Array" unless value.is_a?(Array)
+      raise ArgumentError, "Missing 'Path' in Block IO read rate Bps device" unless value.has_key?('Path')
+      raise ArgumentError, "Missing 'Rate' in Block IO read rate Bps device" unless value.has_key?('Rate')
+      raise ArgumentError, "'Rate' parameter must be an Integer in Block IO read rate Bps device" unless value['Rate'].is_a?(Integer)
+    end
+
+    def insync?(current)
+      return false if current == :absent
+      return current == @should
+    end
+
+    def should
+      return nil unless @should
+      @should
+    end
+
+    def should_to_s(newvalue = @should)
+      if newvalue
+        newvalue.inspect
+      else
+        nil
+      end
     end
   end
 
-  newparam(:blkio_device_write_bps) do
-    desc "Limit write rate (bytes per second) to a device"
+  newproperty(:blkio_device_write_bps, :array_matching => :all) do
+    desc 'Limit write rate (bytes per second) to a device in the form of: [{"Path" => "device_path", "Rate" => rate}]'
 
     validate do |value|
-      raise ArgumentError, "Container device write rate Bps limit '#{value}' is not an Array" unless value.is_a?(Array)
+      raise ArgumentError, "Missing 'Path' in Block IO write rate Bps device" unless value.has_key?('Path')
+      raise ArgumentError, "Missing 'Rate' in Block IO write rate Bps device" unless value.has_key?('Rate')
+      raise ArgumentError, "'Rate' parameter must be an Integer in Block IO write rate Bps device" unless value['Rate'].is_a?(Integer)
+    end
+
+    def insync?(current)
+      return false if current == :absent
+      return current == @should
+    end
+
+    def should
+      return nil unless @should
+      @should
+    end
+
+    def should_to_s(newvalue = @should)
+      if newvalue
+        newvalue.inspect
+      else
+        nil
+      end
     end
   end
 
-  newparam(:blkio_device_read_iops) do
-    desc "Limit read rate (IO per second) from a device"
+  newproperty(:blkio_device_read_iops, :array_matching => :all) do
+    desc 'Limit read rate (IO per second) from a device in the form of: [{"Path" => "device_path", "Rate" => rate}]'
 
     validate do |value|
-      raise ArgumentError, "Container device read rate IOPS limit '#{value}' is not an Array" unless value.is_a?(Array)
+      raise ArgumentError, "Missing 'Path' in Block IO read rate IOPS device" unless value.has_key?('Path')
+      raise ArgumentError, "Missing 'Rate' in Block IO read rate IOPS device" unless value.has_key?('Rate')
+      raise ArgumentError, "'Rate' parameter must be an Integer in Block IO read rate IOPS device" unless value['Rate'].is_a?(Integer)
+    end
+
+    def insync?(current)
+      return false if current == :absent
+      return current == @should
+    end
+
+    def should
+      return nil unless @should
+      @should
+    end
+
+    def should_to_s(newvalue = @should)
+      if newvalue
+        newvalue.inspect
+      else
+        nil
+      end
     end
   end
 
-  newparam(:blkio_device_write_iops) do
-    desc "Limit write rate (IO per second) to a device"
+  newproperty(:blkio_device_write_iops, :array_matching => :all) do
+    desc 'Limit write rate (IO per second) to a device in the form of [{"Path" => "device_path", "Rate" => rate}]'
 
     validate do |value|
-      raise ArgumentError, "Container device write rate IOPS limit '#{value}' is not an Array" unless value.is_a?(Array)
+      raise ArgumentError, "Missing 'Path' in Block IO write rate IOPS device" unless value.has_key?('Path')
+      raise ArgumentError, "Missing 'Rate' in Block IO write rate IOPS device" unless value.has_key?('Rate')
+      raise ArgumentError, "'Rate' parameter must be an Integer in Block IO write rate IOPS device" unless value['Rate'].is_a?(Integer)
+    end
+
+    def insync?(current)
+      return false if current == :absent
+      return current == @should
+    end
+
+    def should
+      return nil unless @should
+      @should
+    end
+
+    def should_to_s(newvalue = @should)
+      if newvalue
+        newvalue.inspect
+      else
+        nil
+      end
     end
   end
 
@@ -322,140 +590,300 @@ Puppet::Type.newtype(:docker_container) do
     desc "Tune a container’s memory swappiness behavior. Accepts an integer between 0 and 100."
 
     validate do |value|
-      raise ArgumentError, "Container memory swappiness '#{value}' is not an Integer" unless value.is_a?(Array)
+      raise ArgumentError, "Container memory swappiness '#{value}' is not an Integer" unless value.is_a?(Integer)
+      raise ArgumentError, "Container memory swappiness '#{value}' must be betwen 0 and 100" unless (value >= 0 and value <= 100)
     end
   end
 
-  newparam(:oom_kill_disable, :boolean => true) do
+  newproperty(:oom_kill_disable, :boolean => true) do
     desc "Whether to disable OOM Killer for the container or not."
     newvalues(:true, :false)
   end
 
-  newparam(:oom_score_adj) do
+  newproperty(:oom_score_adj) do
     desc "Tune container’s OOM preferences (-1000 to 1000)"
 
     validate do |value|
-      raise ArgumentError, "Container OOM score '#{value}' is not an Integer" unless value.is_a?(Array)
+      raise ArgumentError, "Container OOM score '#{value}' is not an Integer" unless value.is_a?(Integer)
+      raise ArgumentError, "Container OOM score '#{value}' must be between -1000 and 1000" unless (value >= -1000 and value <= 1000)
     end
   end
 
-  newparam(:pid_mode) do
+  newproperty(:pid_mode) do
     desc "Set the PID (Process) Namespace mode for the container"
-    newvalues('host', /^container:(\w+)$/)
+    newvalues('', 'host', /^container:(\w+)$/)
+    defaultto('')
   end
 
-  newparam(:pids_limit) do
+  newproperty(:pids_limit) do
     desc "Tune a container’s pids limit. Set -1 for unlimited"
 
     validate do |value|
-      raise ArgumentError, "Container PIDs limit '#{value}' is not an Integer" unless value.is_a?(Array)
+      raise ArgumentError, "Container PIDs limit '#{value}' is not an Integer" unless value.is_a?(Integer)
+      raise ArgumentError, "Container PIDs limit '#{value}' must be >= -1" unless value >= -1
     end
   end
 
-  newparam(:port_bindings) do
-    desc "A map of exposed container ports and the host port they should map to"
+  newproperty(:port_bindings) do
+    desc 'A map of exposed container ports and the host port they should map to in the form {"<port>/<protocol>" => [{"HostPort" => "<port>"}]}'
 
     validate do |value|
       raise ArgumentError, "Container port bindings '#{value}' is not a Hash" unless value.is_a?(Hash)
 
-      value.each do |k, v|
-        if k !~ /^\d+\/(tcp|udp)$/
-          raise ArgumentError, "Container port binding '#{k}' must be in the form of <port>/<tcp|udp>"
+      value.each do |container_port, host_port|
+        if container_port !~ /^\d+\/(tcp|udp)$/
+          raise ArgumentError, "Container port binding '#{container_port}' must be in the form of <port>/<tcp|udp>"
         end
 
-        raise ArgumentError, "Container port binding host port '#{v}' is not an Array" unless v.is_a?(Array)
+        raise ArgumentError, "Container port binding host port '#{host_port}' is not an Array" unless host_port.is_a?(Array)
+        raise ArgumentError, "Container port binding host port '#{host_port}' must have at least one element" unless host_port.size > 0
+        host_port.each do |p|
+          raise ArgumentError, "Missing 'HostPort' parameter in container port binding '#{container_port}'" unless p.has_key?('HostPort')
+          raise ArgumentError, "'HostPort' parameter must be a String in container port binding '#{container_port}'" unless p['HostPort'].is_a?(String)
+        end
+      end
+    end
+
+    def insync?(current)
+      return false if current == :absent
+      @should.first.each do |container_port, host_config|
+        found = false
+        current.each do |current_container_port, current_host_config|
+          if container_port == current_container_port
+            host_config.each.with_index do |h, i|
+              return false if current_host_config[i]['HostPort'] != h['HostPort']
+            end
+            found = true
+            break
+          end
+        end
+        return false unless found
+      end
+
+      current.each do |current_container_port, current_host_config|
+        found = false
+        @should.first.each do |container_port, host_config|
+          if current_container_port == container_port
+            found = true
+            break
+          end
+          return false unless found
+        end
+      end
+
+      true
+    end
+
+    def should
+      return nil unless @should
+      @should.first
+    end
+  end
+
+  newproperty(:publish_all_ports, :boolean => true) do
+    desc "Allocates a random host port for all of a container’s exposed ports"
+    newvalues(:true, :false)
+    defaultto(:false)
+  end
+
+  newproperty(:privileged, :boolean => true) do
+    desc "Gives the container full access to the host"
+    newvalues(:true, :false)
+    defaultto(:false)
+  end
+
+  newproperty(:readonly_rootfs, :boolean => true) do
+    desc "Mount the container’s root filesystem as read only"
+    newvalues(:true, :false)
+    defaultto(:false)
+  end
+
+  newproperty(:dns, :array_matching => :all) do
+    desc "A list of DNS servers for the container to use"
+
+    def insync?(current)
+      return false if current == :absent
+      return current == @should
+    end
+
+    def should
+      return nil unless @should
+      @should
+    end
+
+    def should_to_s(newvalue = @should)
+      if newvalue
+        newvalue.inspect
+      else
+        nil
       end
     end
   end
 
-  newparam(:publish_all_ports, :boolean => true) do
-    desc "Allocates a random host port for all of a container’s exposed ports"
-    newvalues(:true, :false)
-  end
-
-  newparam(:privileged, :boolean => true) do
-    desc "Gives the container full access to the host"
-    newvalues(:true, :false)
-  end
-
-  newparam(:readonly_rootfs, :boolean => true) do
-    desc "Mount the container’s root filesystem as read only"
-    newvalues(:true, :false)
-  end
-
-  newparam(:dns) do
-    desc "A list of DNS servers for the container to use"
-
-    validate do |value|
-      raise ArgumentError, "Container DNS servers '#{value}' is not an Array" unless value.is_a?(Array)
-    end
-  end
-
-  newparam(:dns_options) do
+  newproperty(:dns_options, :array_matching => :all) do
     desc "A list of DNS options"
 
-    validate do |value|
-      raise ArgumentError, "Container DNS options '#{value}' is not an Array" unless value.is_a?(Array)
+    def insync?(current)
+      return false if current == :absent
+      return current == @should
+    end
+
+    def should
+      return nil unless @should
+      @should
+    end
+
+    def should_to_s(newvalue = @should)
+      if newvalue
+        newvalue.inspect
+      else
+        nil
+      end
     end
   end
 
-  newparam(:dns_search) do
+  newproperty(:dns_search, :array_matching => :all) do
     desc "A list of DNS search domains"
 
-    validate do |value|
-      raise ArgumentError, "Container DNS search '#{value}' is not an Array" unless value.is_a?(Array)
+    def insync?(current)
+      return false if current == :absent
+      return current == @should
+    end
+
+    def should
+      return nil unless @should
+      @should
+    end
+
+    def should_to_s(newvalue = @should)
+      if newvalue
+        newvalue.inspect
+      else
+        nil
+      end
     end
   end
 
-  newparam(:extra_hosts) do
+  newproperty(:extra_hosts, :array_matching => :all) do
     desc 'A list of hostnames/IP mappings to add to the container’s /etc/hosts file. Specified in the form ["hostname:IP"].'
 
     validate do |value|
-      raise ArgumentError, "Container hostnames/IP mappings '#{value}' is not an Array" unless value.is_a?(Array)
-
-      value.each do |v|
-        if v !~ /^.+:(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/
-          raise ArgumentError, "Container port binding '#{k}' must be in the form of <hostname>:<ip>"
-        end
+      if value !~ /^.+:(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/
+        raise ArgumentError, "Container port binding '#{value}' must be in the form of <hostname>:<ip>"
       end
     end
+
+    def insync?(current)
+      return false if current == :absent
+      return current == @should
+    end
+
+    def should
+      return nil unless @should
+      @should
+    end
+
+    def should_to_s(newvalue = @should)
+      if newvalue
+        newvalue.inspect
+      else
+        nil
+      end
+    end
+
   end
 
-  newparam(:volumes_from) do
-    desc "A list of volumes to inherit from another container. Specified in the form <container name>[:<ro|rw>]"
+  newproperty(:volumes_from, :array_matching => :all) do
+    desc "A list of volumes to inherit from another container. Specified in the form <container name>:<ro|rw>"
 
     validate do |value|
-      raise ArgumentError, "Container volumes from  '#{value}' is not an Array" unless value.is_a?(Array)
+      if value !~ /^.+:r[wo]$/
+        raise ArgumentError, "Container volume from '#{value}' must be in the form of <container name>:<ro|rw>"
+      end
+    end
 
-      value.each do |v|
-        if v !~ /^.+(:(rw|ro))?/
-          raise ArgumentError, "Container port binding '#{k}' must be in the form of <hostname>:<ip>"
-        end
+    def insync?(current)
+      return false if current == :absent
+      return current == @should
+    end
+
+    def should
+      return nil unless @should
+      @should
+    end
+
+    def should_to_s(newvalue = @should)
+      if newvalue
+        newvalue.inspect
+      else
+        nil
       end
     end
   end
 
-  newparam(:cap_add) do
+  newproperty(:cap_add, :array_matching => :all) do
     desc "A list of kernel capabilities to add to the container"
 
-    validate do |value|
-      raise ArgumentError, "Container add capabilities  '#{value}' is not an Array" unless value.is_a?(Array)
+    def insync?(current)
+      return false if current == :absent
+      return current == @should
+    end
+
+    def should
+      return nil unless @should
+      @should
+    end
+
+    def should_to_s(newvalue = @should)
+      if newvalue
+        newvalue.inspect
+      else
+        nil
+      end
     end
   end
 
-  newparam(:cap_drop) do
+  newproperty(:cap_drop, :array_matching => :all) do
     desc "A list of kernel capabilities to drop from the container"
 
-    validate do |value|
-      raise ArgumentError, "Container drop capabilities  '#{value}' is not an Array" unless value.is_a?(Array)
+    def insync?(current)
+      return false if current == :absent
+      return current == @should
+    end
+
+    def should
+      return nil unless @should
+      @should
+    end
+
+    def should_to_s(newvalue = @should)
+      if newvalue
+        newvalue.inspect
+      else
+        nil
+      end
     end
   end
 
-  newparam(:group_add) do
+  newproperty(:group_add, :array_matching => :all) do
     desc 'A list of additional groups that the container process will run as'
 
-    validate do |value|
-      raise ArgumentError, "Container additional groups  '#{value}' is not an Array" unless value.is_a?(Array)
+    def insync?(current)
+      return false if current == :absent
+      return current == @should
+    end
+
+    def should
+      return nil unless @should
+      @should
+    end
+
+    def should_to_s(newvalue = @should)
+      if newvalue
+        newvalue.inspect
+      else
+        nil
+      end
     end
   end
 
@@ -464,36 +892,68 @@ Puppet::Type.newtype(:docker_container) do
     newvalues(/^on-failure(:\d+)?$/, 'always', 'unless-stopped')
   end
 
-  newparam(:userns_mode) do
+  newproperty(:userns_mode) do
     desc 'Sets the usernamespace mode for the container when usernamespace remapping option is enabled'
-    newvalues('host')
   end
 
-  newparam(:network_mode) do
+  newproperty(:network_mode) do
     desc 'Sets the networking mode for the container. Supported standard values are: bridge, host, none, and container:<name|id>. Any other value is taken as a custom network’s name to which this container should connect to.'
-    newvalues('bridge', 'none', 'host', /^container:(\w+)$/, /./)
   end
 
-  newparam(:devices) do
+  newproperty(:devices, :array_matching => :all) do
     desc 'A list of devices to add to the container specified in the form {"PathOnHost" => "/dev/deviceName", "PathInContainer" => "/dev/deviceName", "CgroupPermissions" => "mrw"}'
 
     validate do |value|
-      raise ArgumentError, "Container devices '#{value}' is not an Array" unless value.is_a?(Array)
+      raise ArgumentError, "Container device '#{value}' is not a Hash" unless value.is_a?(Hash)
+      raise ArgumentError, "Missing 'PathOnHost' parameter in container device" unless value.has_key?('PathOnHost')
+      raise ArgumentError, "Missing 'PathInContainer' parameter in container device" unless value.has_key?('PathInContainer')
+      raise ArgumentError, "Missing 'CgroupPermissions' parameter in container device" unless value.has_key?('CgroupPermissions')
+    end
 
-      value.each do |k, v|
-        raise ArgumentError, "Container device '#{v}' is not a Hash" unless v.is_a?(Hash)
+    def insync?(current)
+      return false if current == :absent
+      return current == @should     
+    end
+
+    def should
+      return nil unless @should
+      @should
+    end
+
+    def should_to_s(newvalue = @should)
+      if newvalue
+        newvalue.inspect
+      else
+        nil
       end
     end
   end
 
-  newparam(:ulimits) do
-    desc 'A list of ulimits to set in the container, specified as {"Name" => <name>, "Soft" => <soft limit>, "Hard" => <hard limit> }'
+  newproperty(:ulimits, :array_matching => :all) do
+    desc 'A list of ulimits to set in the container, specified as {"Name" => <name>, "Soft" => <soft limit>, "Hard" => <hard limit>}'
 
     validate do |value|
-      raise ArgumentError, "Container ulimits '#{value}' is not an Array" unless value.is_a?(Array)
+      raise ArgumentError, "Container ulimit '#{value}' is not a Hash" unless value.is_a?(Hash)
+      raise ArgumentError, "Missing 'Name' parameter in container ulimit" unless value.has_key?('Name')
+      raise ArgumentError, "Missing 'Soft' parameter in container ulimit" unless value.has_key?('Soft')
+      raise ArgumentError, "Missing 'Hard' parameter in container ulimit" unless value.has_key?('Hard')
+    end
 
-      value.each do |k, v|
-        raise ArgumentError, "Container ulimit '#{v}' is not a Hash" unless v.is_a?(Hash)
+    def insync?(current)
+      return false if current == :absent
+      return current == @should     
+    end
+
+    def should
+      return nil unless @should
+      @should
+    end
+
+    def should_to_s(newvalue = @should)
+      if newvalue
+        newvalue.inspect
+      else
+        nil
       end
     end
   end
@@ -506,11 +966,27 @@ Puppet::Type.newtype(:docker_container) do
     end
   end
 
-  newparam(:security_opt) do
+  newproperty(:security_opt, :array_matching => :all) do
     desc 'A list of string values to customize labels for MLS systems, such as SELinux'
+    newvalues(/^label:((user|role|type|level):.+|disable)$/, /^apparmor:.+$/, 'no-new-privileges', /^seccomp:.+$/)
+    defaultto(["label:disable"])
 
-    validate do |value|
-      raise ArgumentError, "Container security options '#{value}' is not an Array" unless value.is_a?(Array)
+    def insync?(current)
+      return false if current == :absent
+      return current == @should
+    end
+
+    def should
+      return nil unless @should
+      @should
+    end
+
+    def should_to_s(newvalue = @should)
+      if newvalue
+        newvalue.inspect
+      else
+        nil
+      end
     end
   end
 
@@ -522,28 +998,34 @@ Puppet::Type.newtype(:docker_container) do
     end
   end
 
-  newparam(:log_driver) do
+  newproperty(:log_driver) do
     desc 'Log driver for the container'
-    newvalues('json-file', 'syslog', 'journald', 'gelf', 'fluentd', 'awslogs', 'splunk', 'etwlogs', 'none', 'json-file')
+    newvalues('json-file', 'syslog', 'journald', 'gelf', 'fluentd', 'awslogs', 'splunk', 'etwlogs', 'none')
   end
 
-  newparam(:log_opts) do
+  newproperty(:log_opts) do
     desc 'Log driver options for the container'
 
     validate do |value|
-      raise ArgumentError, "Log driver options '#{value}' is not a Hash" unless value.is_a?(Hash)
+      raise ArgumentError, "Log driver options is not a Hash" unless value.is_a?(Hash)
+
+      value.each do |k, v|
+        raise ArgumentError, "Log driver option '#{k}' must be a String" unless v.is_a?(String)
+      end
     end
   end
 
-  newparam(:cgroup_parent) do
+  newproperty(:cgroup_parent) do
     desc 'Path to cgroups under which the container’s cgroup is created. If the path is not absolute, the path is considered to be relative to the cgroups path of the init process. Cgroups are created if they do not already exist.'
+    defaultto('')
   end
 
-  newparam(:volume_driver) do
+  newproperty(:volume_driver) do
     desc 'Driver that this container users to mount volumes'
+    defaultto('')
   end
 
-  newparam(:shm_size) do
+  newproperty(:shm_size) do
     desc 'Size of /dev/shm in bytes. The size must be greater than 0.'
 
     validate do |value|

@@ -23,7 +23,7 @@ docker::service_file_manage: true
 docker::packages:
   "docker": {}
   "docker-api":
-    ensure: "puppet_gem"
+    provider: "puppet_gem"
 docker::service_name: "docker"
 docker::service_manage: true
 docker::service_ensure: "running"

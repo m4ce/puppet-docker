@@ -28,7 +28,7 @@ class docker::storage (
       group => "root",
       mode => "0644",
       content => epp("docker/docker-storage-setup.sysconfig.epp"),
-      require => Package[keys($docker::package_name)]
+      require => Package[keys($docker::packages)]
     }
 
     if $docker::service_manage {

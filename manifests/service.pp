@@ -3,7 +3,7 @@ class docker::service {
     service {$docker::service_name:
       ensure => $docker::service_ensure,
       enable => $docker::service_enable,
-      subscribe => Package[$docker::package_name]
+      subscribe => Package[keys($docker::packages)]
     }
   }
 }

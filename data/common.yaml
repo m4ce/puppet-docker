@@ -2,9 +2,10 @@
 lookup_options:
   docker::daemon_options:
     merge:
-      strategy: deep
-      knockout_prefix: --
-      sort_merge_arrays: true
+      strategy: hash
+  docker::packages:
+    merge:
+      strategy: hash
 docker::images: {}
 docker::containers: {}
 docker::volumes: {}
@@ -19,7 +20,10 @@ docker::add_registries: []
 docker::block_registries: []
 docker::insecure_registries: []
 docker::service_file_manage: true
-docker::package_name: "docker"
+docker::packages:
+  "docker": {}
+  "docker-api":
+    ensure: "puppet_gem"
 docker::service_name: "docker"
 docker::service_manage: true
 docker::service_ensure: "running"

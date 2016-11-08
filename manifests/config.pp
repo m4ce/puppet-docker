@@ -5,7 +5,7 @@ class docker::config {
       group => "root",
       mode => "0644",
       content => epp("docker/docker.sysconfig.epp"),
-      require => Package[$docker::package_name]
+      require => Package[keys($docker::packages)]
     }
 
     if $docker::service_manage {

@@ -1,3 +1,7 @@
 class docker::install {
-  realize(Package[$docker::package_name])
+  $docker::packages.each |String $package_name, Hash $package| {
+    package {$package_name:
+      * => $package
+    }
+  }
 }

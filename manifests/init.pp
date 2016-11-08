@@ -13,7 +13,7 @@ class docker (
   Optional[String] $bin_path = undef,
   String $service_file,
   Boolean $service_file_manage,
-  String $package_name,
+  Hash $packages,
   String $service_name,
   Boolean $service_manage,
   Enum["stopped", "running"] $service_ensure,

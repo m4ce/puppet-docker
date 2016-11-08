@@ -159,33 +159,33 @@ Puppet::Type.type(:docker_container).provide(:docker_api) do
     config['HostConfig'] = {}
     config['HostConfig']['Binds'] = resource[:binds] if resource[:binds]
     config['HostConfig']['Links'] = resource[:links] if resource[:links]
-    config['HostConfig']['Memory'] = resource[:memory] if resource[:memory]
-    config['HostConfig']['MemorySwap'] = resource[:memory_swap] if resource[:memory_swap]
-    config['HostConfig']['MemoryReservation'] = resource[:memory_reservation] if resource[:memory_reservation]
-    config['HostConfig']['KernelMemory'] = resource[:kernel_memory] if resource[:kernel_memory]
-    config['HostConfig']['CpuPercent'] = resource[:cpu_percent] if resource[:cpu_percent]
-    config['HostConfig']['CpuShares'] = resource[:cpu_shares] if resource[:cpu_shares]
-    config['HostConfig']['CpuPeriod'] = resource[:cpu_period] if resource[:cpu_period]
-    config['HostConfig']['CpuQuota'] = resource[:cpu_quota] if resource[:cpu_quota]
-    config['HostConfig']['CpusetCpus'] = resource[:cpuset_cpus] if resource[:cpuset_cpus]
-    config['HostConfig']['CpusetMems'] = resource[:cpuset_mems] if resource[:cpuset_mems]
-    config['HostConfig']['MaximumIOps'] = resource[:maximum_iops] if resource[:maximum_iops]
-    config['HostConfig']['MaximumIOBps'] = resource[:maximum_iobps] if resource[:maximum_iobps]
-    config['HostConfig']['BlkioWeight'] = resource[:blkio_weight] if resource[:blkio_weight]
+    config['HostConfig']['Memory'] = resource[:memory] unless resource[:memory].nil?
+    config['HostConfig']['MemorySwap'] = resource[:memory_swap] unless resource[:memory_swap].nil?
+    config['HostConfig']['MemoryReservation'] = resource[:memory_reservation] unless resource[:memory_reservation].nil?
+    config['HostConfig']['KernelMemory'] = resource[:kernel_memory] unless resource[:kernel_memory].nil?
+    config['HostConfig']['CpuPercent'] = resource[:cpu_percent] unless resource[:cpu_percent].nil?
+    config['HostConfig']['CpuShares'] = resource[:cpu_shares] unless resource[:cpu_shares].nil?
+    config['HostConfig']['CpuPeriod'] = resource[:cpu_period] unless resource[:cpu_period].nil?
+    config['HostConfig']['CpuQuota'] = resource[:cpu_quota] unless resource[:cpu_quota].nil?
+    config['HostConfig']['CpusetCpus'] = resource[:cpuset_cpus] unless resource[:cpuset_cpus].nil?
+    config['HostConfig']['CpusetMems'] = resource[:cpuset_mems] unless resource[:cpuset_mems].nil?
+    config['HostConfig']['MaximumIOps'] = resource[:maximum_iops] unless resource[:maximum_iops].nil?
+    config['HostConfig']['MaximumIOBps'] = resource[:maximum_iobps] unless resource[:maximum_iobps].nil?
+    config['HostConfig']['BlkioWeight'] = resource[:blkio_weight] unless resource[:blkio_weight].nil?
     config['HostConfig']['BlkioWeightDevice'] = resource[:blkio_weight_device] if resource[:blkio_weight_device]
     config['HostConfig']['BlkioDeviceReadBps'] = resource[:blkio_device_read_bps] if resource[:blkio_device_read_bps]
     config['HostConfig']['BlkioDeviceReadIOps'] = resource[:blkio_device_read_iops] if resource[:blkio_device_read_iops]
     config['HostConfig']['BlkioDeviceWriteBps'] = resource[:blkio_device_write_bps] if resource[:blkio_device_write_bps]
     config['HostConfig']['BlkioDeviceWriteIOps'] = resource[:blkio_device_write_iops] if resource[:blkio_device_write_iops]
-    config['HostConfig']['MemorySwappiness'] = resource[:memory_swappiness] if resource[:memory_swappiness]
+    config['HostConfig']['MemorySwappiness'] = resource[:memory_swappiness] unless resource[:memory_swappiness].nil?
 
     unless resource[:oom_kill_disable].nil?
       config['HostConfig']['OomKillDisable'] = resource[:oom_kill_disable] == :true ? true : false
     end
 
-    config['HostConfig']['OomScoreAdj'] = resource[:oom_score_adj] if resource[:oom_score_adj]
+    config['HostConfig']['OomScoreAdj'] = resource[:oom_score_adj] unless resource[:oom_score_adj].nil?
     config['HostConfig']['PidMode'] = resource[:pid_mode] if resource[:pid_mode]
-    config['HostConfig']['PidsLimit'] = resource[:pids_limit] if resource[:pids_limit]
+    config['HostConfig']['PidsLimit'] = resource[:pids_limit] unless resource[:pids_limit].nil?
     config['HostConfig']['PortBindings'] = resource[:port_bindings] if resource[:port_bindings]
 
     unless resource[:publish_all_ports].nil?
@@ -212,7 +212,7 @@ Puppet::Type.type(:docker_container).provide(:docker_api) do
     if resource[:restart_policy]
       config['HostConfig']['RestartPolicy'] = {}
 
-      name, max_retry_count = resource[:restart_policy].split(':')
+      name, max_retry_count = resource[:restart_policy].to_s.split(':')
       config['HostConfig']['RestartPolicy']['Name'] = name
       config['HostConfig']['RestartPolicy']['MaximumRetryCount'] = max_retry_count unless max_retry_count.nil?
     end
@@ -225,14 +225,14 @@ Puppet::Type.type(:docker_container).provide(:docker_api) do
     if resource[:log_driver]
       config['HostConfig']['LogConfig'] = {}
       config['HostConfig']['LogConfig']['Type'] = resource[:log_driver]
-      config['HostConfig']['LogConfig']['Config'] = resource[:log_opts] if resource[:log_opts] 
+      config['HostConfig']['LogConfig']['Config'] = resource[:log_opts] if resource[:log_opts]
     end
 
     config['HostConfig']['SecurityOpt'] = resource[:security_opt] if resource[:security_opt]
     config['HostConfig']['StorageOpt'] = resource[:storage_opt] if resource[:storage_opt]
     config['HostConfig']['CgroupParent'] = resource[:cgroup_parent] if resource[:cgroup_parent]
     config['HostConfig']['VolumeDriver'] = resource[:volume_driver] if resource[:volume_driver]
-    config['HostConfig']['ShmSize'] = resource[:shm_size] if resource[:shm_size]
+    config['HostConfig']['ShmSize'] = resource[:shm_size] unless resource[:shm_size].nil?
 
     begin
       container = Docker::Container.create(config)

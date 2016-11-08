@@ -2,7 +2,10 @@
     "author": "Matteo Cerutti",
     "data_provider": "hiera",
     "dependencies": [
-      {"name": "puppetlabs/stdlib", "version_requirement": ">= 4.12.0 < 5.0.0"}
+        {
+            "name": "puppetlabs/stdlib",
+            "version_requirement": ">= 4.12.0 < 5.0.0"
+        }
     ],
     "description": "This module provides native types and providers to manage Docker",
     "issues_url": "https://github.com/m4ce/puppet-docker/issues",
@@ -35,5 +38,5 @@
     ],
     "source": "https://github.com/m4ce/puppet-docker",
     "summary": "This module provides native types and providers to manage Docker",
-    "version": "0.1.6"
+    "version": "0.1.7"
 }

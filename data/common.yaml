@@ -12,7 +12,7 @@ docker::volumes: {}
 docker::networks: {}
 docker::daemon_options:
   host:
-    "unix:///var/run/docker.sock"
+    - "unix:///var/run/docker.sock"
   selinux:
     enabled: true
   log:

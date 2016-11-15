@@ -2,7 +2,7 @@
 lookup_options:
   docker::daemon_options:
     merge:
-      strategy: hash
+      strategy: deep
   docker::packages:
     merge:
       strategy: hash

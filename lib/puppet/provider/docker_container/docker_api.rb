@@ -615,7 +615,7 @@ Puppet::Type.type(:docker_container).provide(:docker_api) do
         container.stop
         if resource[:remove_on_change]
           Puppet.warning("Removing container #{resource[:name]} (ID: #{@property_hash[:id]})")
-          container.remove
+          container.delete(:force => true)
         else
           uuid = SecureRandom.uuid
           Puppet.debug("Renaming container #{resource[:name]} (ID: #{@property_hash[:id]}) to #{uuid}")

@@ -612,7 +612,7 @@ Puppet::Type.type(:docker_container).provide(:docker_api) do
     if @property_hash.has_key?(:id)
       container = Docker::Container.get(@property_hash[:id])
       if @recreate
-        container.stop
+        container.stop(:timeout => 30)
         if resource[:remove_on_change]
           Puppet.warning("Removing container #{resource[:name]} (ID: #{@property_hash[:id]})")
           container.delete(:force => true)

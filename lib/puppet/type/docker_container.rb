@@ -38,8 +38,8 @@ Puppet::Type.newtype(:docker_container) do
 
   newparam(:remove_on_change, :boolean => true) do
     desc 'Boolean value, remove container when changing non runtime parameters, else renames it'
-    newvalues(:true, :false)
-    defaultto(:false)
+    newvalues(true, false)
+    defaultto(false)
   end
 
   newproperty(:image) do

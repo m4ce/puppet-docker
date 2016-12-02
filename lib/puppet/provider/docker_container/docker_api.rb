@@ -604,6 +604,7 @@ Puppet::Type.type(:docker_container).provide(:docker_api) do
     @property_hash[:restart_policy] = value
 
     name, max_retry_count = value.to_s.split(':')
+    @property_flush['RestartPolicy'] = {}
     @property_flush['RestartPolicy']['Name'] = name
     @property_flush['RestartPolicy']['MaximumRetryCount'] = max_retry_count unless max_retry_count.nil?
   end

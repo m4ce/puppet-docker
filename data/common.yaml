@@ -3,6 +3,7 @@ lookup_options:
   docker::daemon_options:
     merge:
       strategy: deep
+      knockout_prefix: "--"
   docker::packages:
     merge:
       strategy: hash
@@ -11,6 +12,7 @@ docker::containers: {}
 docker::volumes: {}
 docker::networks: {}
 docker::daemon_options:
+  graph: "/var/lib/docker"
   host:
     - "unix:///var/run/docker.sock"
   selinux:

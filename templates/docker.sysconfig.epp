@@ -40,9 +40,3 @@ DOCKER_TMPDIR=<%= $docker::tmpdir %>
 # Controls the /etc/cron.daily/docker-logrotate cron job status.
 LOGROTATE=<%= $docker::logrotate %>
 <% } -%>
-<% if $docker::bin_path { -%>
-
-# docker-latest daemon can be used by starting the docker-latest unitfile.
-# To use docker-latest client, uncomment below line
-DOCKERBINARY=<%= docker::bin_path %>
-<% } -%>

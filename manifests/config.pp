@@ -7,7 +7,7 @@ class docker::config {
         owner => "root",
         group => "root",
         mode => "0644",
-        content => epp("docker/docker-common.sysconfig.epp")
+        content => epp("docker/docker-common.sysconfig.epp"),
         require => Package[keys($docker::packages)]
       }
     }

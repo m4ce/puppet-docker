@@ -3,5 +3,5 @@
 #
 
 <% if $docker::bin_path { -%>
-DOCKERBINARY=<%= docker::bin_path %>
+DOCKERBINARY=<%= $docker::bin_path %>
 <% } -%>

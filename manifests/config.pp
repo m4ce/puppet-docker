@@ -22,7 +22,7 @@ class docker::config {
 
     if $docker::service_manage {
       File[$docker::service_file] {
-        notify => Service[$docker::service_name]
+        notify => Service["docker"]
       }
     }
   }

@@ -33,7 +33,7 @@ class docker::storage (
 
     if $docker::service_manage {
       File[$config_file] {
-        notify => Service[$docker::service_name]
+        notify => Service["docker"]
       }
     }
   }

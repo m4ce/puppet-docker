@@ -888,7 +888,7 @@ Puppet::Type.newtype(:docker_container) do
 
   newproperty(:restart_policy) do
     desc 'The behavior to apply when the container exits'
-    newvalues(/^on-failure(:\d+)?$/, 'always', 'unless-stopped')
+    newvalues(/^on-failure:\d+$/, 'always', 'unless-stopped')
   end
 
   newproperty(:userns_mode) do

@@ -214,7 +214,11 @@ Puppet::Type.type(:docker_container).provide(:docker_api) do
 
       name, max_retry_count = resource[:restart_policy].to_s.split(':')
       config['HostConfig']['RestartPolicy']['Name'] = name
-      config['HostConfig']['RestartPolicy']['MaximumRetryCount'] = max_retry_count unless max_retry_count.nil?
+      if name == 'on-failure'
+        config['HostConfig']['RestartPolicy']['MaximumRetryCount'] = max_retry_count.to_i unless max_retry_count.nil?
+      else
+        config['HostConfig']['RestartPolicy']['MaximumRetryCount'] = 0
+      end
     end
 
     config['HostConfig']['UsernsMode'] = resource[:userns_mode] if resource[:userns_mode]
@@ -606,7 +610,11 @@ Puppet::Type.type(:docker_container).provide(:docker_api) do
     name, max_retry_count = value.to_s.split(':')
     @property_flush['RestartPolicy'] = {}
     @property_flush['RestartPolicy']['Name'] = name
-    @property_flush['RestartPolicy']['MaximumRetryCount'] = max_retry_count unless max_retry_count.nil?
+    if name == 'on-failure'
+      @property_flush['RestartPolicy']['MaximumRetryCount'] = max_retry_count.to_i unless max_retry_count.nil?
+    else
+      @property_flush['RestartPolicy']['MaximumRetryCount'] = 0
+    end
   end
 
   def flush

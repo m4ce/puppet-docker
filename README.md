@@ -19,6 +19,8 @@ on the docker metadata.
 For docker containers, when changing parameters that cannot be updated without restarting the container, there's an optional boolean flag called
 [*remove_on_change*](#remove_on_change) which allows to you either remove the container or rename it to a random UUID.
 
+Docker 1.12 or above is highly recommended.
+
 <a name="module-description"/>
 ## Module Description
 

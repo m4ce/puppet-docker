@@ -6,6 +6,7 @@
 2. [Module Description - What the module does and why it is useful](#module-description)
 3. [Setup - The basics of getting started with the docker module](#setup)
 4. [Reference - Types reference and additional functionalities](#reference)
+5. [Use docker latest](#docker-latest)
 5. [Hiera integration](#hiera)
 6. [Contact](#contact)
 
@@ -485,6 +486,22 @@ Network specific options to be used by the drivers
 
 ##### `labels` (optional)
 Labels to set on the network, specified as a map: {"key" => "value","key2" => "value2"}
+
+<a name="docker-latest"/>
+## Use docker-latest
+
+If you want to use docker-latest rather than the stock docker package, you would need to override the module's defaults via Hiera as follows:
+
+```
+docker::packages:
+  "docker":
+    ensure: "absent"
+  "docker-latest":
+    ensure: "present"
+docker::service_name: "docker-latest"
+docker::service_file: "/etc/sysconfig/docker-latest"
+docker::storage::config_file: "/etc/sysconfig/docker-latest-storage-setup"
+```
 
 <a name="hiera"/>
 ## Hiera integration

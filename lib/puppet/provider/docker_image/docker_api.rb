@@ -17,14 +17,16 @@ Puppet::Type.type(:docker_image).provide(:docker_api) do
     instances = []
 
     Docker::Image.all.each do |image|
-      image.info['RepoTags'].each do |repo_tag|
-        instances << new(
-          :id => image.id,
-          :name => repo_tag,
-          :image_name => repo_tag.split(':')[0],
-          :image_tag => repo_tag.split(':')[1],
-          :ensure => :present
-        )
+      if image.info['RepoTags']
+        image.info['RepoTags'].each do |repo_tag|
+          instances << new(
+            :id => image.id,
+            :name => repo_tag,
+            :image_name => repo_tag.split(':')[0],
+            :image_tag => repo_tag.split(':')[1],
+            :ensure => :present
+          )
+        end
       end
     end
 

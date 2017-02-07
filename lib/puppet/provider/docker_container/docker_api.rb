@@ -271,6 +271,7 @@ Puppet::Type.type(:docker_container).provide(:docker_api) do
   end
 
   def stop
+    self.create if @property_hash.empty?
     container = Docker::Container.get(@property_hash[:id])
     container.stop
   end

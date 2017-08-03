@@ -6,8 +6,13 @@ Puppet::Type.type(:docker_container).provide(:docker_api) do
 
   confine :feature => :docker_api
 
-  # Use the docker unix socket for communicating with the daemon
-  Docker.url = "unix:///var/run/docker.sock"
+  def initialize(value = {})
+    super(value)
+    @property_flush = {}
+
+    # Use the docker unix socket for communicating with the daemon
+    Docker.url = "unix:///var/run/docker.sock"
+  end
 
   def self.instances
     instances = []

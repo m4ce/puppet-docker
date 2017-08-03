@@ -1,9 +1,3 @@
-#
-# docker_volume.rb
-#
-# Author: Matteo Cerutti <matteo.cerutti@hotmail.co.uk>
-#
-
 Puppet::Type.newtype(:docker_volume) do
   @doc = 'Docker volume'
 

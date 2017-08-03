@@ -1,9 +1,3 @@
-#
-# docker_network.rb
-#
-# Author: Matteo Cerutti <matteo.cerutti@hotmail.co.uk>
-#
-
 Puppet::Type.newtype(:docker_network) do
   @doc = 'Docker network'
 

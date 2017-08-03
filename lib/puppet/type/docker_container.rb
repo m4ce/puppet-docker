@@ -1,9 +1,3 @@
-#
-# docker_container.rb
-#
-# Author: Matteo Cerutti <matteo.cerutti@hotmail.co.uk>
-#
-
 Puppet::Type.newtype(:docker_container) do
   @doc = 'Manage Docker container(s) runtime'
 

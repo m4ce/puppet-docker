@@ -1,14 +1,9 @@
-#
-# docker_api.rb
-#
-# Author: Matteo Cerutti <matteo.cerutti@hotmail.co.uk>
-#
+require 'docker' if Puppet.features.docker_api?
 
 Puppet::Type.type(:docker_volume).provide(:docker_api) do
   desc "Docker volume provider"
 
   confine :feature => :docker_api
-  require 'docker'
 
   # Use the docker unix socket for communicating with the daemon
   Docker.url = "unix:///var/run/docker.sock"

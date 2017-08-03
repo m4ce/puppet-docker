@@ -1,9 +1,3 @@
-#
-# docker_image.rb
-#
-# Author: Matteo Cerutti <matteo.cerutti@hotmail.co.uk>
-#
-
 Puppet::Type.newtype(:docker_image) do
   @doc = 'Docker image'
 

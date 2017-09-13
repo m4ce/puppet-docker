@@ -1,6 +1,6 @@
 class docker::service {
   if $docker::service_manage {
-    service {"docker":
+    service {$docker::service_name:
       name => $docker::service_name,
       ensure => $docker::service_ensure,
       enable => $docker::service_enable,

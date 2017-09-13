@@ -1,4 +1,0 @@
-docker::service_file: "/etc/sysconfig/docker"
-docker::common_service_file: "/etc/sysconfig/docker"
-docker::storage::config_file: "/etc/sysconfig/docker-storage-setup"
-docker::bin_path: "/usr/bin/docker-latest"

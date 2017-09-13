@@ -1,9 +1,9 @@
 ---
 lookup_options:
-  docker::daemon_options:
+  docker::opts:
     merge:
       strategy: deep
-      knockout_prefix: "--"
+      knockout_prefix: '--'
   docker::packages:
     merge:
       strategy: hash
@@ -11,25 +11,21 @@ docker::images: {}
 docker::containers: {}
 docker::volumes: {}
 docker::networks: {}
-docker::daemon_options:
-  graph: "/var/lib/docker"
-  host:
-    - "unix:///var/run/docker.sock"
-  selinux:
-    enabled: true
-  log:
-    driver: journald
-docker::cert_path: "/etc/docker"
-docker::add_registries: []
-docker::block_registries: []
-docker::insecure_registries: []
-docker::service_file_manage: true
+docker::opts:
+  'graph': '/var/lib/docker'
+  'host':
+    - 'unix:///var/run/docker.sock'
+  'selinux-enabled': true
+  'log-driver': journald
+docker::config_dir: '/etc/docker'
+docker::config_file: "%{lookup('docker::config_dir')}/docker.json"
+docker::config_file_manage: true
 docker::packages:
-  "docker": {}
-  "docker-api":
-    provider: "puppet_gem"
-docker::service_name: "docker"
+  'docker-engine': {}
+  'docker-api':
+    provider: 'puppet_gem'
+docker::service_name: 'docker'
 docker::service_manage: true
-docker::service_ensure: "running"
+docker::service_ensure: 'running'
 docker::service_enable: true
 docker::storage::config_file_manage: true

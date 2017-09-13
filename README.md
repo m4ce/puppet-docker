@@ -6,11 +6,11 @@
 2. [Module Description - What the module does and why it is useful](#module-description)
 3. [Setup - The basics of getting started with the docker module](#setup)
 4. [Reference - Types reference and additional functionalities](#reference)
-5. [Use docker latest](#docker-latest)
 5. [Hiera integration](#hiera)
 6. [Contact](#contact)
 
 <a name="overview"/>
+
 ## Overview
 
 This module implements native types and providers to manage some aspects of Docker. The providers are *fully idempotent* and they only rely
@@ -19,14 +19,16 @@ on the docker metadata.
 For docker containers, when changing parameters that cannot be updated without restarting the container, there's an optional boolean flag called
 [*remove_on_change*](#remove_on_change) which allows to you either remove the container or rename it to a random UUID.
 
-Docker 1.12 or above is highly recommended.
+Docker 1.12.1 or above is highly recommended.
 
 <a name="module-description"/>
+
 ## Module Description
 
 The docker module allows to automate the configuration and runtime of containers as well as the deployment of images, networks and volumes.
 
 <a name="setup"/>
+
 ## Setup
 
 The module requires the [docker-api](https://rubygems.org/gems/docker-api) rubygem. It also requires Puppet >= 4.0.0.
@@ -44,6 +46,7 @@ include docker
 ```
 
 <a name="reference"/>
+
 ## Reference
 
 ### Classes
@@ -67,44 +70,27 @@ Docker networks in the form of {'network_name' => { .. }}
 ##### `volumes` (optional)
 Docker volumes in the form of {'volume_name' => { .. }}
 
-##### `daemon_options` (optional)
+##### `opts` (optional)
 Docker daemon options in the form of {'option' => 'value'}.
 
 Defaults to:
 ```
-docker::daemon_options:
-  selinux:
-    enabled: true
-  log:
-    driver: journald
+docker::opts:
+  'graph': '/var/lib/docker'
+  'host':
+    - 'unix:///var/run/docker.sock'
+  'selinux-enabled': true
+  'log-driver': journald
 ```
 
-##### `cert_path` (optional)
-Docker certificate path (default: /etc/docker)
+##### `config_dir` (optional)
+Path to the docker configuration directory (default: '/etc/docker')
 
-##### `add_registries` (optional)
-List of registries to be used for docker search and pull
+##### `config_file` (optional)
+Path to the docker daemon configuration file (default: '$config_dir/daemon.json')
 
-##### `block_registries` (optional)
-List of registries to be blocked
-
-##### `insecure_registries` (optional)
-List of registries secured with https but without valid certs
-
-##### `tmpdir` (optional)
-Location used for temporary files
-
-##### `logrotate` (optional)
-Enable or disable log rotation
-
-##### `bin_path` (optional)
-Controls the docker binary to run
-
-##### `service_file` (optional)
-Path to the docker service configuration file (default: '/etc/sysconfig/docker')
-
-##### `service_file_manage` (optional)
-Whether we should manage the service configuration file or not (default: true)
+##### `config_file_manage` (optional)
+Whether we should manage the docker configuration file or not (default: true)
 
 ##### `package_name` (optional)
 Installation packge for Docker (default: 'docker')
@@ -120,51 +106,6 @@ Whether the resource is running or not. Valid values are 'running', 'stopped'. (
 
 ##### `service_enable` (optional)
 Whether the service is onboot enabled or not. Defaults to true.
-
-#### docker::storage
-`docker::storage`
-
-##### `driver` (required)
-Specify storage driver one wants to use with docker. Valid values are: '', 'devicemapper', 'overlay'.
-
-##### `extra_options` (optional)
-A set of extra options for the storage driver. These options will be passed to the Docker daemon as-is and should be valid Docker storage options.
-
-##### 'devs' (optional)
-A quoted, space-separated list of devices to be used
-
-##### `vg` (optional)
-The volume group to use for docker storage
-
-##### `root_size` (optional)
-The size to which the root filesystem should be grown
-
-##### `data_size` (optional)
-The desired size for the docker data LV
-
-##### `min_data_size` (optional)
-Specifies the minimum size of data volume otherwise pool creation fails
-
-##### `chunk_size` (optional)
-Controls the chunk size/block size of thin pool
-
-##### `growpart` (optional)
-Enable resizing partition table backing root volume group
-
-##### `auto_extend_pool` (optional)
-Enable/disable automatic pool extension using lvm
-
-##### `pool_autoextend_threshold` (optional)
-Auto pool extension threshold (in % of pool size)
-
-##### `pool_autoextend_percent` (optional)
-Extend the pool by specified percentage when threshold is hit
-
-##### `config_file` (optional)
-Path to the docker-storage-setup configuration file (default: /etc/sysconfig/docker-storage-setup)
-
-##### `config_file_manage` (optional)
-Whether we should manage the storage config configuration file or not (default: true)
 
 ### Types
 
@@ -219,6 +160,7 @@ Note that only the following parameters can be changed *without* re-creating the
 Docker container name
 
 <a name="remove_on_change"/>
+
 ##### `remove_on_change` (optional)
 When set to true, log, remove and re-create the container when changing non-runtime parameters. When false, the container will be
 renamed to a random UUID before re-creating it. Valid values are true or false. Defaults to false.
@@ -489,23 +431,8 @@ Network specific options to be used by the drivers
 ##### `labels` (optional)
 Labels to set on the network, specified as a map: {"key" => "value","key2" => "value2"}
 
-<a name="docker-latest"/>
-## Use docker-latest
-
-If you want to use docker-latest rather than the stock docker package, you would need to override the module's defaults via Hiera as follows:
-
-```
-docker::packages:
-  "docker":
-    ensure: "absent"
-  "docker-latest":
-    ensure: "present"
-docker::service_name: "docker-latest"
-docker::service_file: "/etc/sysconfig/docker-latest"
-docker::storage::config_file: "/etc/sysconfig/docker-latest-storage-setup"
-```
-
 <a name="hiera"/>
+
 ## Hiera integration
 
 You can optionally define your images, containers, volumes and networks in Hiera.
@@ -529,5 +456,7 @@ docker::volumes:
 ```
 
 <a name="contact"/>
+
 ## Contact
+
 Matteo Cerutti - matteo.cerutti@hotmail.co.uk

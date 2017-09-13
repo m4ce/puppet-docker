@@ -3,17 +3,10 @@ class docker (
   Docker::Containers $containers,
   Docker::Networks $networks,
   Docker::Volumes $volumes,
-  Optional[Hash] $daemon_options,
-  String $cert_path,
-  Optional[Array] $add_registries,
-  Optional[Array] $block_registries,
-  Optional[Array] $insecure_registries,
-  Optional[String] $tmpdir = undef,
-  Optional[Boolean] $logrotate = undef,
-  Optional[String] $bin_path = undef,
-  String $common_service_file,
-  String $service_file,
-  Boolean $service_file_manage,
+  Docker::Options $opts,
+  String $config_dir,
+  String $config_file,
+  Boolean $config_file_manage,
   Hash $packages,
   String $service_name,
   Boolean $service_manage,
@@ -22,7 +15,6 @@ class docker (
 ) {
   include docker::install
   include docker::config
-  include docker::storage
   include docker::service
 
   $images.each |String $k, Docker::Image $v| {

@@ -1,28 +1,26 @@
 class docker::config {
-  if $docker::service_file_manage {
-    # are we using docker-latest?
-
-    if $docker::common_service_file != $docker::service_file {
-      file {$docker::common_service_file:
-        owner => "root",
-        group => "root",
-        mode => "0644",
-        content => epp("docker/docker-common.sysconfig.epp"),
-        require => Package[keys($docker::packages)]
-      }
-    }
-
-    file {$docker::service_file:
-      owner => "root",
-      group => "root",
-      mode => "0644",
-      content => epp("docker/docker.sysconfig.epp"),
+  if $docker::config_file_manage {
+    File {
+      owner  => 'root',
+      group  => 'root',
       require => Package[keys($docker::packages)]
     }
 
+    file {
+      $docker::config_dir:
+        mode   => '0755',
+        ensure => 'directory';
+
+      $docker::config_file:
+        mode    => '0644',
+        content => epp("docker/docker.json.epp", {
+          'opts' => generate_json($docker::opts)
+        })
+    }
+
     if $docker::service_manage {
-      File[$docker::service_file] {
-        notify => Service["docker"]
+      File[$docker::config_file] {
+        notify => Service[$docker::service_name]
       }
     }
   }

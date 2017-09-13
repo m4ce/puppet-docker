@@ -1,0 +1,4 @@
+---
+docker::packages:
+  docker:
+    ensure: '1.13.1-1.el7.centos'

@@ -12,7 +12,6 @@ docker::containers: {}
 docker::volumes: {}
 docker::networks: {}
 docker::opts:
-  'graph': '/var/lib/docker'
   'host':
     - 'unix:///var/run/docker.sock'
   'selinux-enabled': true

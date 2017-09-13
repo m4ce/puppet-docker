@@ -12,6 +12,7 @@ type Docker::Options = Struct[{
   Optional['containerd']                       => String,
   Optional['cpu-rt-period']                    => Integer,
   Optional['cpu-rt-runtime']                   => Integer,
+  Optional['graph']                            => String,
   Optional['data-root']                        => String,
   Optional['debug']                            => Boolean,
   Optional['default-gateway']                  => String,

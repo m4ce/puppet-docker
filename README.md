@@ -76,10 +76,8 @@ Docker daemon options in the form of {'option' => 'value'}.
 Defaults to:
 ```
 docker::opts:
-  'graph': '/var/lib/docker'
   'host':
     - 'unix:///var/run/docker.sock'
-  'selinux-enabled': true
   'log-driver': journald
 ```
 

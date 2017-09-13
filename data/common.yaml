@@ -17,7 +17,7 @@ docker::opts:
   'selinux-enabled': true
   'log-driver': journald
 docker::config_dir: '/etc/docker'
-docker::config_file: "%{lookup('docker::config_dir')}/docker.json"
+docker::config_file: "%{lookup('docker::config_dir')}/daemon.json"
 docker::config_file_manage: true
 docker::packages:
   'docker-engine': {}

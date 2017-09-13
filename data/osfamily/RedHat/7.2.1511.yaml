@@ -1,4 +1,4 @@
 ---
 docker::packages:
-  docker:
+  'docker-engine':
     ensure: '1.12.6-1.el7.centos'

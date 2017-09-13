@@ -8,7 +8,7 @@ class docker::config {
 
     file {
       $docker::config_dir:
-        mode   => '0755',
+        mode   => '0700',
         ensure => 'directory';
 
       $docker::config_file:

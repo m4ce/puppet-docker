@@ -12,7 +12,7 @@ docker::containers: {}
 docker::volumes: {}
 docker::networks: {}
 docker::opts:
-  'host':
+  'hosts':
     - 'unix:///var/run/docker.sock'
   'selinux-enabled': true
   'log-driver': journald

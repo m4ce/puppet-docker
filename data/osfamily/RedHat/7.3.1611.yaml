@@ -2,5 +2,6 @@
 docker::packages:
   'docker-engine':
     ensure: '1.13.1-1.el7.centos'
+    require: Package[docker-engine-selinux]
   'docker-engine-selinux':
     ensure: '1.13.1-1.el7.centos'

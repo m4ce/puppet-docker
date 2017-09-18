@@ -2,7 +2,7 @@ class docker::lvm (
   String $vol_name,
   String $vol_group,
   String $vol_size,
-  String $fs_type,
+  Enum['xfs', 'ext4'] $fs_type,
   Hash $fs_opts,
   Hash $mount_opts
 ) {

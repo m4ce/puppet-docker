@@ -81,6 +81,9 @@ docker::opts:
   'log-driver': journald
 ```
 
+##### `data_on_lvm` (optional)
+Whether to store the data on a logical volume (default: false)
+
 ##### `config_dir` (optional)
 Path to the docker configuration directory (default: '/etc/docker')
 
@@ -104,6 +107,24 @@ Whether the resource is running or not. Valid values are 'running', 'stopped'. (
 
 ##### `service_enable` (optional)
 Whether the service is onboot enabled or not. Defaults to true.
+
+#### docker::lvm
+`docker::lvm`
+
+##### `vol_name` (required)
+Logical volume name
+
+##### `vol_group` (required)
+Logical volume group
+
+##### `fs_type` (required)
+File system type. Supported types are `xfs`, `ext4`.
+
+##### `fs_opts` (optional)
+File system options
+
+##### `mount_opts` (optional)
+Mount options
 
 ### Types
 

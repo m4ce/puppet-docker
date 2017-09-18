@@ -4,6 +4,7 @@ class docker (
   Docker::Networks $networks,
   Docker::Volumes $volumes,
   Docker::Options $opts,
+  Boolean $data_on_lvm,
   String $config_dir,
   String $config_file,
   Boolean $config_file_manage,
@@ -15,6 +16,11 @@ class docker (
 ) {
   include docker::install
   include docker::config
+
+  if $data_on_lvm {
+    include docker::lvm
+  }
+
   include docker::service
 
   $images.each |String $k, Docker::Image $v| {

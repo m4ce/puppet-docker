@@ -1,0 +1,5 @@
+---
+docker::lvm:
+  fs_type: 'xfs'
+  fs_opts:
+    options: '-n ftype=1'

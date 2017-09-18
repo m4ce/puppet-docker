@@ -40,4 +40,10 @@ class docker::lvm (
       atboot  => true,
       options => 'defaults'
   }
+
+  if $docker::service_manage {
+    Mount[$data_dir] {
+      notify => Service[$service_name]
+    }
+  }
 }

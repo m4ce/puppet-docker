@@ -17,8 +17,6 @@ docker::opts:
   'selinux-enabled': true
   'log-driver': journald
 docker::data_on_lvm: false
-  fs_opts: {}
-  mount_opts: {}
 docker::config_dir: '/etc/docker'
 docker::config_file: "%{lookup('docker::config_dir')}/daemon.json"
 docker::config_file_manage: true
@@ -30,4 +28,6 @@ docker::service_name: 'docker'
 docker::service_manage: true
 docker::service_ensure: 'running'
 docker::service_enable: true
-docker::storage::config_file_manage: true
+docker::lvm:
+  fs_opts: {}
+  mount_opts: {}

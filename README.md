@@ -126,6 +126,39 @@ File system options
 ##### `mount_opts` (optional)
 Mount options
 
+#### docker::gc
+`docker::gc`
+
+##### `exclude_images` (optional)
+Images to exclude from garbage collection
+
+##### `exclude_containers` (optional)
+Containers to exclude from garbage collection
+
+##### `grace_period_seconds` (optional)
+Exclude recently exited containers and images from garbage collection. Defaults to `86400`.
+
+##### `force_image_removal` (optional)
+Forcing deletion of images that have multiple tags. Defaults to `false`.
+
+##### `force_container_removal` (optional)
+Forcing deletion of containers. Defaults to `false`.
+
+##### `state_dir` (required)
+State directory. Defaults to `/var/lib/docker-gc`.
+
+##### `config_dir` (optional)
+Configuration directory. Defaults to `/etc/docker-gc`.
+
+##### `image_name` (optional)
+Docker image name. Defaults to `spotify/docker-gc:latest`
+
+##### `cron` (optional)
+Cron definition
+
+##### `enable` (optional)
+Whether docker-gc is enabled or not. Defaults to `false`.
+
 ### Types
 
 #### docker_image

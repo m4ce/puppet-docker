@@ -7,6 +7,15 @@ lookup_options:
   docker::packages:
     merge:
       strategy: hash
+  docker::gc::exclude_images:
+    merge:
+      strategy: unique
+  docker::gc::exclude_containers:
+    merge:
+      strategy: unique
+  docker::gc::cron:
+    merge:
+      strategy: deep
 docker::images: {}
 docker::containers: {}
 docker::volumes: {}
@@ -31,3 +40,14 @@ docker::service_enable: true
 docker::lvm:
   fs_opts: {}
   mount_opts: {}
+docker::gc::exclude_images: []
+docker::gc::exclude_containers: []
+docker::gc::grace_period_seconds: 86400
+docker::gc::force_container_removal: true
+docker::gc::force_image_removal: true
+docker::gc::minimum_image_to_save: 10
+docker::gc::state_dir: '/var/lib/docker-gc'
+docker::gc::config_dir: '/etc/docker-gc'
+docker::gc::image_name: 'spotify/docker-gc:latest'
+docker::gc::cron: {}
+docker::gc::enable: false

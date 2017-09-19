@@ -6,7 +6,7 @@ class docker::gc (
   Boolean $force_container_removal,
   String $state_dir,
   String $config_dir,
-  String $service_image,
+  String $image_name,
   Hash $cron,
   Boolean $enable
 ) {

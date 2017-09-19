@@ -43,8 +43,8 @@ docker::lvm:
 docker::gc::exclude_images: []
 docker::gc::exclude_containers: []
 docker::gc::grace_period_seconds: 86400
-docker::gc::force_container_removal: true
-docker::gc::force_image_removal: true
+docker::gc::force_container_removal: false
+docker::gc::force_image_removal: false
 docker::gc::minimum_image_to_save: 10
 docker::gc::state_dir: '/var/lib/docker-gc'
 docker::gc::config_dir: '/etc/docker-gc'

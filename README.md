@@ -144,6 +144,9 @@ Forcing deletion of images that have multiple tags. Defaults to `false`.
 ##### `force_container_removal` (optional)
 Forcing deletion of containers. Defaults to `false`.
 
+##### `minimum_images_to_save` (optional)
+Preserving a minimum number of images for every repository. Defaults to `10`.
+
 ##### `state_dir` (required)
 State directory. Defaults to `/var/lib/docker-gc`.
 

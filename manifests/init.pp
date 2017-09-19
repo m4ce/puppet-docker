@@ -46,4 +46,6 @@ class docker (
       * => $v
     }
   }
+
+  include docker::gc
 }

@@ -77,9 +77,12 @@ Defaults to:
 ```
 docker::opts:
   'host':
-    - 'unix:///var/run/docker.sock'
+    - 'unix://$unix_socket'
   'log-driver': journald
 ```
+
+##### `unix_socket` (optional)
+Docker UNIX socket. Defaults to `/var/run/docker.sock`.
 
 ##### `data_on_lvm` (optional)
 Whether to store the data on a logical volume (default: false)

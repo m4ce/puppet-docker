@@ -4,6 +4,7 @@ class docker (
   Docker::Networks $networks,
   Docker::Volumes $volumes,
   Docker::Options $opts,
+  String $unix_socket,
   Boolean $data_on_lvm,
   String $config_dir,
   String $config_file,

@@ -22,9 +22,10 @@ docker::volumes: {}
 docker::networks: {}
 docker::opts:
   'hosts':
-    - 'unix:///var/run/docker.sock'
+    - "unix://%{lookup('docker::unix_socket')}"
   'selinux-enabled': true
   'log-driver': journald
+docker::unix_socket: '/var/run/docker.sock'
 docker::data_on_lvm: false
 docker::config_dir: '/etc/docker'
 docker::config_file: "%{lookup('docker::config_dir')}/daemon.json"

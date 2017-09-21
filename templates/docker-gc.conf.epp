@@ -3,5 +3,9 @@
 #
 
 <% $opts.each |$k, $v| { -%>
+<% if $v =~ Boolean { -%>
+<%= upcase($k) %>=<% if $v { %>1<% } else { %>0<% } %>
+<% } else { -%>
 <%= upcase($k) %>=<%= $v %>
+<% } -%>
 <% } -%>

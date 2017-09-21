@@ -45,10 +45,9 @@ docker::lvm:
   fs_opts: {}
   mount_opts: {}
 docker::gc::opts:
-  grace_period_seconds: 86400
+  grace_period_seconds: 3600
   force_container_removal: false
   force_image_removal: false
-  minimum_image_to_save: 10
 docker::gc::exclude_images: []
 docker::gc::exclude_containers: []
 docker::gc::state_dir: '/var/lib/docker-gc'

@@ -144,10 +144,9 @@ Docker garbage collection options in the form of {'option' => 'value'}.
 Defaults to:
 ```
 docker::gc::opts:
-  grace_period_seconds: 86400
+  grace_period_seconds: 3600
   force_container_removal: false
   force_image_removal: false
-  minimum_image_to_save: 10
 ```
 
 ##### `state_dir` (required)

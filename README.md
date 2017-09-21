@@ -106,7 +106,7 @@ Docker service name (default: 'docker')
 Whether we should manage the service runtime or not (default: true)
 
 ##### `service_ensure` (optional)
-Whether the resource is running or not. Valid values are 'running', 'stopped'. (default: 'running')
+Whether the resource is running or not. Valid values are `running`, `stopped`. (default: `running`)
 
 ##### `service_enable` (optional)
 Whether the service is onboot enabled or not. Defaults to true.
@@ -152,6 +152,9 @@ docker::gc::opts:
 ##### `state_dir` (required)
 State directory. Defaults to `/var/lib/docker-gc`.
 
+##### `log_file` (optional)
+Log file. Defaults to `/var/log/docker-gc.log`.
+
 ##### `config_dir` (optional)
 Configuration directory. Defaults to `/etc/docker-gc`.
 
@@ -183,10 +186,10 @@ Docker image name, defaults to name
 Docker image tag, defaults to name
 
 ##### `ensure` (optional)
-Whether the resource is present or not. Valid values are 'present', 'absent'. Defaults to 'present'.
+Whether the resource is present or not. Valid values are `present`, `absent`. Defaults to `present`.
 
 ##### `force`
-Force image removal. Must be a Boolean, default is false.
+Force image removal. Must be a Boolean, defaults to `false`.
 
 #### docker_container
 `docker_container` manages Docker containers
@@ -226,7 +229,7 @@ renamed to a random UUID before re-creating it. Valid values are true or false. 
 A string specifying the image name to use for the container.
 
 ##### `ensure` (required)
-Whether the resource is present or not. Valid values are 'present', 'running', 'stopped', 'absent'. Defaults to 'present'.
+Whether the resource is present or not. Valid values are `present`, `running`, `stopped`, `absent`. Defaults to `present`.
 
 ##### `hostname` (optional)
 A string value containing the hostname to use for the container. This must be a valid RFC 1123 hostname.
@@ -441,7 +444,7 @@ docker_volume {"data":
 Docker volume name
 
 ##### `ensure` (optional)
-Whether the resource is present or not. Valid values are 'present', 'absent'. Defaults to 'present'.
+Whether the resource is present or not. Valid values are `present`, `absent`. Defaults to `present`.
 
 ##### `driver` (optional)
 Name of the volume driver to use
@@ -465,7 +468,7 @@ docker_network {"fast":
 Docker network name
 
 ##### `ensure` (optional)
-Whether the resource is present or not. Valid values are 'present', 'absent'. Defaults to 'present'.
+Whether the resource is present or not. Valid values are `present`, `absent`. Defaults to `present`.
 
 ##### `check_duplicate` (optional)
 Requests daemon to check for networks with same name

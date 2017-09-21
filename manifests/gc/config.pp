@@ -18,7 +18,8 @@ class docker::gc::config {
         'opts' => merge($docker::gc::opts, {
           'exclude_from_gc' => $exclude_images_file,
           'exclude_containers_from_gc' => $exclude_containers_file
-      }));
+        })
+      });
 
     $exclude_images_file:
       mode => '0644',

@@ -1,0 +1,7 @@
+#
+# Managed by Puppet in the <%= $::environment %> environment
+#
+
+<% $opts.each |$k, $v| { -%>
+<%= upcase($k) %>=<%= $v %>
+<% } -%>

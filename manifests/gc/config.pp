@@ -9,6 +9,12 @@ class docker::gc::config {
       mode => '0755',
       ensure => "directory";
 
+    $docker::gc::config_file:
+      mode => '0644',
+      content => epp('docker/docker-gc.conf.epp', {
+        'opts' => $docker::gc::opts
+      });
+
     "${docker::gc::config_dir}/exclude-images.conf":
       mode => '0644',
       content => epp('docker/gc-exclude.conf.epp', {
@@ -24,7 +30,7 @@ class docker::gc::config {
 
   cron {'docker-gc':
     *       => $docker::gc::cron,
-    command => "docker run --rm -e GRACE_PERIOD_SECONDS=${docker::gc::grace_period_seconds} -e FORCE_CONTAINER_REMOVAL=${Integer($docker::gc::force_container_removal)} -e FORCE_IMAGE_REMOVAL=${Integer($docker::gc::force_image_removal)} -e MINIMUM_IMAGE_TO_SAVE=${docker::gc::minimum_image_to_save} -e EXCLUDE_CONTAINERS_FROM_GC=${docker::gc::config_dir}/exclude-containers.conf -e EXCLUDE_FROM_GC=${docker::gc::config_dir}/exclude-images.conf -v ${docker::gc::state_dir}:${docker::gc::state_dir}:rw -v ${docker::gc::config_dir}:${docker::gc::config_dir}:ro -v ${docker::unix_socket}:${docker::unix_socket} ${docker::gc::image_name}",
+    command => "docker run --rm --env-file=${docker::gc::config_file} -v ${docker::gc::state_dir}:${docker::gc::state_dir}:rw -v ${docker::gc::config_dir}:${docker::gc::config_dir}:ro -v ${docker::unix_socket}:${docker::unix_socket} ${docker::gc::image_name}",
     user    => 'root',
     ensure  => $docker::gc::enable ? {
       true  => 'present',

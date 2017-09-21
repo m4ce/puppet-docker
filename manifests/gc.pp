@@ -4,6 +4,7 @@ class docker::gc (
   Array[String] $exclude_containers,
   String $state_dir,
   String $config_dir,
+  String $config_file,
   String $image_name,
   Hash $cron,
   Boolean $enable

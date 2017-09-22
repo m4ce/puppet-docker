@@ -14,6 +14,23 @@ class docker::gc (
     fail("Cron settings are required in ${title}")
   }
 
-  include docker::gc::install
-  include docker::gc::config
+  if $enable {
+    include docker::gc::install
+    include docker::gc::config
+
+    Cron['docker-gc'] {
+      ensure => 'present',
+      require => Docker_image[$image_name]
+    }
+  } else {
+    Cron['docker-gc'] {
+      ensure => 'absent'
+    }
+  }
+
+  cron {'docker-gc':
+    *       => $cron,
+    command => "docker run --rm --env-file=${config_file} -v ${state_dir}:${state_dir}:rw -v ${config_dir}:${config_dir}:ro -v ${docker::unix_socket}:${docker::unix_socket} ${image_name} >${log_file}",
+    user    => 'root'
+  }
 }

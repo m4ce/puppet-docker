@@ -33,15 +33,4 @@ class docker::gc::config {
         'exclude' => $docker::gc::exclude_containers
       })
   }
-
-  cron {'docker-gc':
-    *       => $docker::gc::cron,
-    command => "docker run --rm --env-file=${docker::gc::config_file} -v ${docker::gc::state_dir}:${docker::gc::state_dir}:rw -v ${docker::gc::config_dir}:${docker::gc::config_dir}:ro -v ${docker::unix_socket}:${docker::unix_socket} ${docker::gc::image_name} >${docker::gc::log_file}",
-    user    => 'root',
-    ensure  => $docker::gc::enable ? {
-      true  => 'present',
-      false => 'absent'
-    },
-    require => Docker_image[$docker::gc::image_name]
-  }
 }
